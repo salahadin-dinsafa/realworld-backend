@@ -1,10 +1,17 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { Module } from '@nestjs/common/decorators/modules/module.decorator';
+
+import { TypeOrmModule } from '@nestjs/typeorm';
+
+import { AuthModule } from './auth/auth.module';
+import { ormConfig } from './common/db/ormconfig.datasource';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+    imports: [
+        TypeOrmModule.forRootAsync({
+            useFactory: ormConfig,
+        }),
+        AuthModule,
+    ],
 })
-export class AppModule {}
+
+export class AppModule { }
