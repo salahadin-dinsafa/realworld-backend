@@ -1,5 +1,8 @@
 import { DataSource } from "typeorm";
 import { MysqlConnectionOptions } from "typeorm/driver/mysql/MysqlConnectionOptions";
+import {config} from 'dotenv';
+
+config();
 
 export const ormConfig = (): MysqlConnectionOptions => ({
     type: "mysql",
