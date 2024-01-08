@@ -1,4 +1,4 @@
-import { Controller, Get, Param, UseGuards } from "@nestjs/common";
+import { Controller, Delete, Get, Param, Post, UseGuards } from "@nestjs/common";
 
 import { AuthGuard } from "@nestjs/passport";
 
@@ -19,4 +19,21 @@ export class ProfileController {
         return this.profileService.find(username, user);
     }
 
+    @UseGuards(AuthGuard('jwt'))
+    @Post(':username/follow')
+    follow(
+        @User() user: UserEntity,
+        @Param('username') username: string,
+    ): Promise<IProfile>{
+        return this.profileService.follow(username, user);
+    }
+
+    @UseGuards(AuthGuard('jwt'))
+    @Delete(':username/follow')
+    unFollow(
+        @User() user: UserEntity,
+        @Param('username') username: string,
+    ): Promise<IProfile>{
+        return this.profileService.unFollow(username, user);
+    }
 }
