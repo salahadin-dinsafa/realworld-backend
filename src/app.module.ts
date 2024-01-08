@@ -9,6 +9,7 @@ import * as Joi from 'joi/lib/index';
 import { AuthModule } from './auth/auth.module';
 import { ormConfig } from './common/db/ormconfig.datasource';
 import { OptionalJwtAuthGuard } from './common/guard/jwt-auth.guard';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
     imports: [
@@ -26,6 +27,7 @@ import { OptionalJwtAuthGuard } from './common/guard/jwt-auth.guard';
             useFactory: ormConfig,
         }),
         AuthModule,
+        ProfileModule,
     ],
     providers: [
         {
