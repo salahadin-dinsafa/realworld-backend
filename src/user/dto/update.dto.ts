@@ -1,32 +1,37 @@
 import { Type } from "class-transformer";
 import { IsEmail, IsNotEmpty, IsObject, IsOptional, IsString, ValidateNested } from "class-validator";
 
-export class RegistrationEle {
+
+export class UpdateDtoEle {
+    @IsOptional()
+    @IsEmail()
+    @IsNotEmpty()
+    email: string;
+
+    @IsOptional()
     @IsString()
     @IsNotEmpty()
     username: string;
 
-    @IsNotEmpty()
-    @IsEmail()
-    email: string;
-
+    @IsOptional()
     @IsNotEmpty()
     @IsString()
     password: string;
 
+
     @IsOptional()
+    @IsNotEmpty()
+    @IsString()
+    image: string;
+
+    @IsOptional()
+    @IsNotEmpty()
     @IsString()
     bio: string;
-
-    @IsOptional()
-    @IsString()
-    @IsNotEmpty()
-    image: string;
 }
-
-export class RegistrationDto {
+export class UpdateDto {
     @IsObject()
     @ValidateNested()
-    @Type(() => RegistrationEle)
-    user: RegistrationEle;
+    @Type(() => UpdateDtoEle)
+    user: UpdateDtoEle;
 }

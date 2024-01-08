@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common/decorators/modules/module.decorator';
-import { APP_PIPE } from '@nestjs/core/constants';
+import { APP_GUARD, APP_PIPE } from '@nestjs/core/constants';
 import { ValidationPipe } from '@nestjs/common/pipes/validation.pipe';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config/index';
 import * as Joi from 'joi/lib/index';
 
 import { AuthModule } from './auth/auth.module';
 import { ormConfig } from './common/db/ormconfig.datasource';
+import { OptionalJwtAuthGuard } from './common/guard/jwt-auth.guard';
 
 @Module({
     imports: [
@@ -18,6 +19,7 @@ import { ormConfig } from './common/db/ormconfig.datasource';
                 DB_USER: Joi.string().required(),
                 DB_PASSWORD: Joi.string().required(),
                 DB_NAME: Joi.string().required(),
+                JWT_SECRET: Joi.string().required(),
             })
         }),
         TypeOrmModule.forRootAsync({
@@ -34,6 +36,10 @@ import { ormConfig } from './common/db/ormconfig.datasource';
                 transform: true,
                 transformOptions: { enableImplicitConversion: true }
             })
+        },
+        {
+            provide: APP_GUARD,
+            useClass: OptionalJwtAuthGuard
         }
 
     ]
