@@ -32,5 +32,13 @@ export class ArticleController {
         return this.articleService.update(user, slug, updateArticleDto);
     }
 
-    
+    @UseGuards(AuthGuard('jwt'))
+    @Delete
+        (':slug')
+    delete(
+        @User() user: UserEntity,
+        @Param('slug') slug: string
+    ): Promise<void> {
+        return this.articleService.delete(user, slug);
+    }
 }

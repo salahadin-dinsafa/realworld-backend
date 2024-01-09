@@ -18,6 +18,19 @@ export class ArticleService {
         private readonly profileService: ProfileService,
     ) { }
 
+    async findBySlug(slug: string): Promise<ArticleEntity> {
+        let article: ArticleEntity;
+        try {
+            article = await this.articleRepository.findOne({ where: { slug }, relations: ['author'] });
+
+        } catch (error) {
+            throw new UnprocessableEntityException(error.message);
+        }
+        if (!article)
+            throw new NotFoundException('article not found');
+        return article;
+    }
+
     async create(author: UserEntity, createArticle: ICreateArticle): Promise<IArticle> {
         const titleArray: string[] = createArticle.article.title.toLowerCase().split(' ');
         try {
@@ -37,10 +50,9 @@ export class ArticleService {
     }
 
     async update(currentUser: UserEntity, slug: string, updateArticle: IUpdateArticle): Promise<IArticle> {
-        let article: ArticleEntity =
-            await this.articleRepository.findOne({ where: { slug }, relations: ['author'] });
-        if (!article)
-            throw new NotFoundException('article not found');
+
+        let article: ArticleEntity = await this.findBySlug(slug);
+
         if (article.author.id !== currentUser.id)
             throw new ForbiddenException();
 
@@ -53,6 +65,19 @@ export class ArticleService {
 
         try {
             return await this.getArticle(await article.save(), currentUser);
+        } catch (error) {
+            throw new UnprocessableEntityException(error.message);
+        }
+    }
+
+    async delete(currentUser: UserEntity, slug: string): Promise<void> {
+        let article: ArticleEntity = await this.findBySlug(slug);
+
+        if (article.author.id !== currentUser.id)
+            throw new ForbiddenException()
+
+        try {
+            await article.remove();
         } catch (error) {
             throw new UnprocessableEntityException(error.message);
         }
