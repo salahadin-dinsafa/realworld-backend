@@ -6,9 +6,12 @@ import { Repository } from "typeorm/repository/Repository";
 import { ArticleEntity } from "./entities/article.entity";
 import { UserEntity } from "src/user/entities/user.entity";
 import { ICreateArticle } from "./interface/create-article.interface";
-import { IArticle } from "./interface/article.interface";
+import { IArticle, IArticleEle } from "./interface/article.interface";
 import { ProfileService } from "src/profile/profile.service";
 import { IUpdateArticle } from "./interface/update-article.interface";
+import { IArticles } from "./interface/articles.interface";
+import { IFeedPagination } from "./interface/feed-pagination.interface";
+import { DataSource } from "typeorm/data-source/DataSource";
 
 @Injectable()
 export class ArticleService {
@@ -16,6 +19,7 @@ export class ArticleService {
         @InjectRepository(ArticleEntity)
         private readonly articleRepository: Repository<ArticleEntity>,
         private readonly profileService: ProfileService,
+        private readonly datasource: DataSource
     ) { }
 
     async findBySlug(slug: string): Promise<ArticleEntity> {
@@ -93,12 +97,38 @@ export class ArticleService {
         }
     }
 
-    async feed(currentUser: UserEntity): Promise<any> {
+    async feed(currentUser: UserEntity, pagination: IFeedPagination): Promise<IArticles> {
+        const { limit, offset } = pagination;
         try {
-            let followedUsers: UserEntity[] = 
-            (await this.profileService.findByNameWithFollowing(currentUser.username)).following;
+            let queryBuilder =
+                this.datasource
+                    .getRepository(ArticleEntity)
+                    .createQueryBuilder('article')
+                    .leftJoinAndSelect('article.author', 'author')
+                    .addOrderBy('article.updatedAt', 'DESC')
 
-            return followedUsers;
+            let followingId: number[] =
+                (await this.profileService.findByNameWithFollowing(currentUser.username))
+                    .following
+                    .map(user => user.id);
+
+            queryBuilder.andWhere('author.id IN(:...ids)', { ids: followingId });
+
+            queryBuilder.offset(offset);
+            queryBuilder.limit(limit ? limit : 20);
+
+            let result: IArticleEle[] =
+                await Promise.all(
+                    (await queryBuilder.getMany())
+                        .map(async article => ((await this.getArticle(article, currentUser)).article))
+                )
+
+            return {
+                articles: result,
+                articlesCount: result.length
+            }
+
+
         } catch (error) {
             throw new UnprocessableEntityException(error.message);
         }

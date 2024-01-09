@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from "@nestjs/common";
 
 import { AuthGuard } from "@nestjs/passport";
 
@@ -8,6 +8,7 @@ import { User } from "src/user/decorators/user.decorator";
 import { CreateArticleDto } from "./dto/create-article.dto";
 import { IArticle } from "./interface/article.interface";
 import { UpdateArticleDto } from "./dto/update-article.dto";
+import { FeedPaginationDto } from "./dto/feed-pagination.dto";
 
 @Controller('articles')
 export class ArticleController {
@@ -44,8 +45,8 @@ export class ArticleController {
 
     @UseGuards(AuthGuard('jwt'))
     @Get('feed')
-    feed(@User() user: UserEntity): Promise<any> {
-        return this.articleService.feed(user);
+    feed(@User() user: UserEntity, @Query() feedPaginationDto: FeedPaginationDto): Promise<any> {
+        return this.articleService.feed(user, feedPaginationDto);
     }
 
     @Get(':slug')
