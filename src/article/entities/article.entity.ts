@@ -7,8 +7,7 @@ export class ArticleEntity extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Index()
-    @Column()
+    @Column({ unique: true })
     slug: string;
 
     @Column()

@@ -29,7 +29,7 @@ export class UserService {
         } catch (error) {
             if (error.code === 'ER_DUP_ENTRY')
                 throw new UnprocessableEntityException('user already exist');
-            throw new UnprocessableEntityException(error.code);
+            throw new UnprocessableEntityException(error.message);
         }
 
     }
