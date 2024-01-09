@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Param, Post, Put, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from "@nestjs/common";
 
 import { AuthGuard } from "@nestjs/passport";
 
@@ -40,5 +40,13 @@ export class ArticleController {
         @Param('slug') slug: string
     ): Promise<void> {
         return this.articleService.delete(user, slug);
+    }
+
+    @Get(':slug')
+    findOne(
+        @User() user: UserEntity,
+        @Param('slug') slug: string,
+    ): Promise<IArticle> {
+        return this.articleService.findOne(user, slug);
     }
 }

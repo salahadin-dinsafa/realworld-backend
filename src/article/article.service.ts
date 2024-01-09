@@ -71,6 +71,7 @@ export class ArticleService {
     }
 
     async delete(currentUser: UserEntity, slug: string): Promise<void> {
+
         let article: ArticleEntity = await this.findBySlug(slug);
 
         if (article.author.id !== currentUser.id)
@@ -78,6 +79,15 @@ export class ArticleService {
 
         try {
             await article.remove();
+        } catch (error) {
+            throw new UnprocessableEntityException(error.message);
+        }
+    }
+
+    async findOne(user: UserEntity, slug: string): Promise<IArticle> {
+        let article: ArticleEntity = await this.findBySlug(slug);
+        try {
+            return await this.getArticle(article, user);
         } catch (error) {
             throw new UnprocessableEntityException(error.message);
         }
