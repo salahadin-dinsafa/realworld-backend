@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { ormConfig } from './common/db/ormconfig.datasource';
 import { OptionalJwtAuthGuard } from './common/guard/jwt-auth.guard';
 import { ProfileModule } from './profile/profile.module';
+import { ArticleModule } from './article/article.module';
 
 @Module({
     imports: [
@@ -28,6 +29,7 @@ import { ProfileModule } from './profile/profile.module';
         }),
         AuthModule,
         ProfileModule,
+        ArticleModule,
     ],
     providers: [
         {
