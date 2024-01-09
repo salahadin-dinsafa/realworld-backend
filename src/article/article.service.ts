@@ -93,6 +93,17 @@ export class ArticleService {
         }
     }
 
+    async feed(currentUser: UserEntity): Promise<any> {
+        try {
+            let followedUsers: UserEntity[] = 
+            (await this.profileService.findByNameWithFollowing(currentUser.username)).following;
+
+            return followedUsers;
+        } catch (error) {
+            throw new UnprocessableEntityException(error.message);
+        }
+    }
+
     async getArticle(article: ArticleEntity, currentUser: UserEntity): Promise<IArticle> {
         const user: UserEntity = await this.profileService.findByNameWithFollower(article.author.username);
         return {

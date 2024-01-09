@@ -42,11 +42,21 @@ export class ArticleController {
         return this.articleService.delete(user, slug);
     }
 
+    @UseGuards(AuthGuard('jwt'))
+    @Get('feed')
+    feed(@User() user: UserEntity): Promise<any> {
+        return this.articleService.feed(user);
+    }
+
     @Get(':slug')
     findOne(
         @User() user: UserEntity,
         @Param('slug') slug: string,
     ): Promise<IArticle> {
         return this.articleService.findOne(user, slug);
+
     }
+
+    
+
 }

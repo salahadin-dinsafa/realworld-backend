@@ -21,14 +21,25 @@ export class ProfileService {
             throw new UnprocessableEntityException(error.message);
         }
     }
+    async findByNameWithFollowing(username: string): Promise<UserEntity> {
+        try {
+            return await this.userRepository.findOne({ where: { username }, relations: ['following'] })
+        } catch (error) {
+            throw new UnprocessableEntityException(error.message);
+        }
+    }
+
+
 
     async follow(username: string, currentUser: UserEntity): Promise<IProfile> {
         let user: UserEntity = await this.findByNameWithFollower(username);
         if (!user) throw new NotFoundException()
+        let cUser = await this.findByNameWithFollowing(currentUser.username);
 
         try {
-            user.follower.push(currentUser);
-            return this.getProfile(await user.save(), currentUser);
+            user.follower.push(cUser);
+            cUser.following.push(user);
+            return this.getProfile(await user.save(), await cUser.save());
         } catch (error) {
             throw new UnprocessableEntityException(error.message)
         }
@@ -37,13 +48,17 @@ export class ProfileService {
         let user: UserEntity = await this.findByNameWithFollower(username);
         if (!user) throw new NotFoundException()
 
+        let cUser = await this.findByNameWithFollowing(currentUser.username);
+
         const liked: boolean = user.follower.findIndex(user => user.id === currentUser.id) !== -1;
-        if (liked)
-            user.follower = user.follower.filter(user => user.id !== currentUser.id);
+        if (liked) {
+            user.follower = user.follower.filter(user => user.id !== cUser.id);
+            cUser.following = cUser.following.filter(u => u.id !== user.id);
+        }
 
         try {
-            
-            return this.getProfile(await user.save(), currentUser);
+
+            return this.getProfile(await user.save(), await cUser.save());
         } catch (error) {
             throw new UnprocessableEntityException(error.message)
         }

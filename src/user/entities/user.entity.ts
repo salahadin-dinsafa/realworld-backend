@@ -23,12 +23,12 @@ export class UserEntity extends BaseEntity {
     @Column({ nullable: true })
     image: string
 
-    @ManyToMany(() => UserEntity, userEntity => userEntity.following)
-    @JoinTable({ name: "following" })
+    @ManyToMany(() => UserEntity)
+    @JoinTable({ name: "follower" })
     follower: UserEntity[];
 
-    @ManyToMany(() => UserEntity, userEntity => userEntity.follower)
-    @JoinTable({ name: "followed" })
+    @ManyToMany(() => UserEntity)
+    @JoinTable({ name: "following" })
     following: UserEntity[];
 
     @OneToMany(() => ArticleEntity, articleEntity => articleEntity.author, {cascade: true})
