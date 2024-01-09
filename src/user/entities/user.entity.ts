@@ -1,4 +1,5 @@
 import { ArticleEntity } from "src/article/entities/article.entity";
+import { CommentEntity } from "src/article/entities/comment.entity";
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, JoinTable, ManyToMany, OneToMany } from "typeorm";
 
 
@@ -31,7 +32,10 @@ export class UserEntity extends BaseEntity {
     @JoinTable({ name: "following" })
     following: UserEntity[];
 
-    @OneToMany(() => ArticleEntity, articleEntity => articleEntity.author, {cascade: true})
+    @OneToMany(() => ArticleEntity, articleEntity => articleEntity.author, { cascade: true })
     articles: ArticleEntity[];
+
+    @OneToMany(() => CommentEntity, commentEntity => commentEntity.article)
+    comments: CommentEntity[];
 
 }

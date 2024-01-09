@@ -1,5 +1,10 @@
 import { UserEntity } from "src/user/entities/user.entity";
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Index, ManyToOne, Unique } from "typeorm";
+
+import {
+    BaseEntity, Entity, PrimaryGeneratedColumn, Column,
+    CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany
+} from "typeorm";
+import { CommentEntity } from "./comment.entity";
 
 
 @Entity({ name: "articles", })
@@ -36,5 +41,8 @@ export class ArticleEntity extends BaseEntity {
 
     @ManyToOne(() => UserEntity, userEntity => userEntity.articles)
     author: UserEntity;
+
+    @OneToMany(() => CommentEntity, commentEntity => commentEntity.author)
+    comments: CommentEntity[];
 
 }
