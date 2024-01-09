@@ -1,4 +1,7 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, JoinTable, ManyToMany } from "typeorm";
+import { ArticleEntity } from "src/article/entities/article.entity";
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, JoinTable, ManyToMany, OneToMany } from "typeorm";
+
+
 
 @Entity({ name: 'users' })
 export class UserEntity extends BaseEntity {
@@ -27,5 +30,8 @@ export class UserEntity extends BaseEntity {
     @ManyToMany(() => UserEntity, userEntity => userEntity.follower)
     @JoinTable({ name: "followed" })
     following: UserEntity[];
+
+    @OneToMany(() => ArticleEntity, articleEntity => articleEntity.author, {cascade: true})
+    articles: ArticleEntity[];
 
 }
