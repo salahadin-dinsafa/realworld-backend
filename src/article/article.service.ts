@@ -12,12 +12,17 @@ import { IUpdateArticle } from "./interface/update-article.interface";
 import { IArticles } from "./interface/articles.interface";
 import { IFeedPagination } from "./interface/feed-pagination.interface";
 import { DataSource } from "typeorm/data-source/DataSource";
+import { IComment } from "./interface/comment.interface";
+import { IAddComment } from "./interface/add-comment.interface";
+import { CommentEntity } from "./entities/comment.entity";
 
 @Injectable()
 export class ArticleService {
     constructor(
         @InjectRepository(ArticleEntity)
         private readonly articleRepository: Repository<ArticleEntity>,
+        @InjectRepository(CommentEntity)
+        private readonly commentRepository: Repository<CommentEntity>,
         private readonly profileService: ProfileService,
         private readonly datasource: DataSource
     ) { }
@@ -133,6 +138,61 @@ export class ArticleService {
             throw new UnprocessableEntityException(error.message);
         }
     }
+
+
+
+    // Comment
+
+    async findArticleWithComment(slug: string): Promise<ArticleEntity> {
+        let article: ArticleEntity;
+
+        try {
+            article = await this.articleRepository.findOne({ where: { slug }, relations: ['comments'] })
+        } catch (error) {
+            throw new UnprocessableEntityException(error.message);
+        }
+
+        if (!article) throw new NotFoundException('article not found');
+
+        return article;
+    }
+
+    async addComment(author: UserEntity, slug: string, addComment: IAddComment): Promise<IComment> {
+        let article: ArticleEntity = await this.findArticleWithComment(slug);
+        try {
+            const comment: CommentEntity = await this.commentRepository.save({
+                ...addComment.comment,
+                article,
+                author
+            })
+            return this.getComment(comment, author)
+        } catch (error) {
+            throw new UnprocessableEntityException(error);
+        }
+    }
+
+
+    async getComment(comment: CommentEntity, currentUser: UserEntity): Promise<IComment> {
+        const user: UserEntity = await this.profileService.findByNameWithFollower(comment.author.username);
+
+        delete comment.article;
+        return {
+            comment: {
+                id: comment.id,
+                createAt: comment.createdAt,
+                updatedAt: comment.updatedAt,
+                body: comment.body,
+                author: this.profileService.getProfile(user, currentUser).profile
+            }
+        }
+    }
+
+
+
+
+
+
+    // Helper function
 
     async getArticle(article: ArticleEntity, currentUser: UserEntity): Promise<IArticle> {
         const user: UserEntity = await this.profileService.findByNameWithFollower(article.author.username);

@@ -9,6 +9,8 @@ import { CreateArticleDto } from "./dto/create-article.dto";
 import { IArticle } from "./interface/article.interface";
 import { UpdateArticleDto } from "./dto/update-article.dto";
 import { FeedPaginationDto } from "./dto/feed-pagination.dto";
+import { AddCommentDto } from "./dto/add-comment.dto";
+import { IComment } from "./interface/comment.interface";
 
 @Controller('articles')
 export class ArticleController {
@@ -58,6 +60,16 @@ export class ArticleController {
 
     }
 
-    
+    @UseGuards(AuthGuard('jwt'))
+    @Post(':slug/comments')
+    addCommentToArticle(
+        @User() user: UserEntity,
+        @Param('slug') slug: string,
+        @Body() addCommentDto: AddCommentDto
+    ): Promise<IComment> {
+        return this.articleService.addComment(user, slug, addCommentDto)
+    }
+
+
 
 }
