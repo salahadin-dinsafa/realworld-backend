@@ -173,20 +173,6 @@ export class ArticleService {
     }
 
 
-    async getComment(comment: CommentEntity, currentUser: UserEntity): Promise<IComment> {
-        const user: UserEntity = await this.profileService.findByNameWithFollower(comment.author?.username);
-
-        delete comment.article;
-        return {
-            comment: {
-                id: comment.id,
-                createAt: comment.createdAt,
-                updatedAt: comment.updatedAt,
-                body: comment.body,
-                author: this.profileService.getProfile(user, currentUser).profile
-            }
-        }
-    }
 
     async findComments(user: UserEntity, slug: string): Promise<IComments> {
         const article: ArticleEntity = await this.findArticleWithComment(slug);
@@ -197,6 +183,24 @@ export class ArticleService {
                         async comment => (await this.getComment(comment, user)).comment)
                 )
             }
+        } catch (error) {
+            throw new UnprocessableEntityException(error.message);
+        }
+    }
+
+    async removeComment(user: UserEntity, slug: string, id: number): Promise<void> {
+        try {
+            let comment =
+                await this.commentRepository.findOne({ where: { id }, relations: ['article', 'author'] })
+
+            if (!comment)
+                throw new NotFoundException('comment not found');
+            if (comment.article.slug !== slug)
+                throw new NotFoundException('article not found');
+            if (comment.author.id !== user.id)
+                throw new ForbiddenException();
+
+            await comment.remove();
         } catch (error) {
             throw new UnprocessableEntityException(error.message);
         }
@@ -223,6 +227,22 @@ export class ArticleService {
                 favorited: article.favorited,
                 favoritesCount: article.favoritesCount,
                 author: this.profileService.getProfile(user, currentUser).profile,
+            }
+        }
+    }
+
+
+    async getComment(comment: CommentEntity, currentUser: UserEntity): Promise<IComment> {
+        const user: UserEntity = await this.profileService.findByNameWithFollower(comment.author?.username);
+
+        delete comment.article;
+        return {
+            comment: {
+                id: comment.id,
+                createAt: comment.createdAt,
+                updatedAt: comment.updatedAt,
+                body: comment.body,
+                author: this.profileService.getProfile(user, currentUser).profile
             }
         }
     }

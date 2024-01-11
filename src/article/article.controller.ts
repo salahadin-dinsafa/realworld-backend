@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query, UseGuards } from "@nestjs/common";
 
 import { AuthGuard } from "@nestjs/passport";
 
@@ -81,6 +81,15 @@ export class ArticleController {
         return this.articleService.findComments(user, slug);
     }
 
+    @UseGuards(AuthGuard('jwt'))
+    @Delete(":slug/comments/:id")
+    removeComment(
+        @User() user: UserEntity,
+        @Param('slug') slug: string,
+        @Param('id', ParseIntPipe) id: number,
+    ): Promise<void>{
+        return this.articleService.removeComment(user, slug, id);
+    }
 
 
 }
