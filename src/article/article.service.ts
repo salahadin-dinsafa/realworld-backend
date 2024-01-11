@@ -15,6 +15,7 @@ import { DataSource } from "typeorm/data-source/DataSource";
 import { IComment } from "./interface/comment.interface";
 import { IAddComment } from "./interface/add-comment.interface";
 import { CommentEntity } from "./entities/comment.entity";
+import { IComments } from "./interface/comments.interface";
 
 @Injectable()
 export class ArticleService {
@@ -173,7 +174,7 @@ export class ArticleService {
 
 
     async getComment(comment: CommentEntity, currentUser: UserEntity): Promise<IComment> {
-        const user: UserEntity = await this.profileService.findByNameWithFollower(comment.author.username);
+        const user: UserEntity = await this.profileService.findByNameWithFollower(comment.author?.username);
 
         delete comment.article;
         return {
@@ -184,6 +185,20 @@ export class ArticleService {
                 body: comment.body,
                 author: this.profileService.getProfile(user, currentUser).profile
             }
+        }
+    }
+
+    async findComments(user: UserEntity, slug: string): Promise<IComments> {
+        const article: ArticleEntity = await this.findArticleWithComment(slug);
+        try {
+            return {
+                comments: await Promise.all(
+                    article.comments.map(
+                        async comment => (await this.getComment(comment, user)).comment)
+                )
+            }
+        } catch (error) {
+            throw new UnprocessableEntityException(error.message);
         }
     }
 

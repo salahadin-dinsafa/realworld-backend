@@ -4,7 +4,7 @@ export interface IComment {
     comment: ICommentEle
 }
 
-interface ICommentEle {
+export interface ICommentEle {
     id: number;
     createAt: Date;
     updatedAt: Date;

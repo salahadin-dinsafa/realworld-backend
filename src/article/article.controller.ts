@@ -11,6 +11,7 @@ import { UpdateArticleDto } from "./dto/update-article.dto";
 import { FeedPaginationDto } from "./dto/feed-pagination.dto";
 import { AddCommentDto } from "./dto/add-comment.dto";
 import { IComment } from "./interface/comment.interface";
+import { IComments } from "./interface/comments.interface";
 
 @Controller('articles')
 export class ArticleController {
@@ -36,8 +37,7 @@ export class ArticleController {
     }
 
     @UseGuards(AuthGuard('jwt'))
-    @Delete
-        (':slug')
+    @Delete(':slug')
     delete(
         @User() user: UserEntity,
         @Param('slug') slug: string
@@ -47,7 +47,10 @@ export class ArticleController {
 
     @UseGuards(AuthGuard('jwt'))
     @Get('feed')
-    feed(@User() user: UserEntity, @Query() feedPaginationDto: FeedPaginationDto): Promise<any> {
+    feed(
+        @User() user: UserEntity,
+        @Query() feedPaginationDto: FeedPaginationDto,
+    ): Promise<any> {
         return this.articleService.feed(user, feedPaginationDto);
     }
 
@@ -68,6 +71,14 @@ export class ArticleController {
         @Body() addCommentDto: AddCommentDto
     ): Promise<IComment> {
         return this.articleService.addComment(user, slug, addCommentDto)
+    }
+
+    @Get(':slug/comments')
+    findComments(
+        @User() user: UserEntity,
+        @Param('slug') slug: string,
+    ): Promise<IComments> {
+        return this.articleService.findComments(user, slug);
     }
 
 
