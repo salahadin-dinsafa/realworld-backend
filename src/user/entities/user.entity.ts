@@ -38,4 +38,8 @@ export class UserEntity extends BaseEntity {
     @OneToMany(() => CommentEntity, commentEntity => commentEntity.article)
     comments: CommentEntity[];
 
+    @ManyToMany(() => ArticleEntity, articleEntity => articleEntity.likes)
+    @JoinTable()
+    likes: ArticleEntity[];
+
 }

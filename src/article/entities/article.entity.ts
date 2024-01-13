@@ -2,7 +2,7 @@ import { UserEntity } from "src/user/entities/user.entity";
 
 import {
     BaseEntity, Entity, PrimaryGeneratedColumn, Column,
-    CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany
+    CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany, ManyToMany, JoinTable
 } from "typeorm";
 import { CommentEntity } from "./comment.entity";
 
@@ -44,5 +44,8 @@ export class ArticleEntity extends BaseEntity {
 
     @OneToMany(() => CommentEntity, commentEntity => commentEntity.author)
     comments: CommentEntity[];
+
+    @ManyToMany(() => UserEntity, userEntity => userEntity.likes)
+    likes: UserEntity[];
 
 }

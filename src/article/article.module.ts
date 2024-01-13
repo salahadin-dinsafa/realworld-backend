@@ -7,13 +7,14 @@ import { ArticleService } from "./article.service";
 import { ArticleEntity } from "./entities/article.entity";
 import { ProfileModule } from "src/profile/profile.module";
 import { CommentEntity } from "./entities/comment.entity";
+import { FavoriteController } from "./favorite.controller";
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([ArticleEntity, CommentEntity]),
         ProfileModule,
     ],
-    controllers: [ArticleController],
+    controllers: [ArticleController, FavoriteController],
     providers: [ArticleService],
 })
 export class ArticleModule { }

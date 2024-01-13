@@ -206,6 +206,62 @@ export class ArticleService {
         }
     }
 
+    //Favorite
+
+    async findArticleWithLikes(slug: string): Promise<ArticleEntity> {
+        let article: ArticleEntity =
+            await this.articleRepository.findOne({ where: { slug }, relations: ['likes', 'author'] })
+        if (!article) throw new NotFoundException('article not found');
+        return article;
+    }
+
+    async favorite(user: UserEntity, slug: string): Promise<IArticle> {
+        let article: ArticleEntity = await this.findArticleWithLikes(slug);
+        let currentUser: UserEntity =
+            await this.profileService.findByNameWithLikesAndFollowing(user.username);
+
+        const isLikes: boolean = currentUser.likes.findIndex(art => art.id === article.id) !== -1;
+
+        if (isLikes)
+            return await this.getArticle(article, currentUser);
+
+
+        if (!article.favorited)
+            article.favorited = true;
+
+        currentUser.likes.push(article);
+        article.likes.push(currentUser);
+        article.favoritesCount += 1;
+        try {
+            return this.getArticle(await article.save(), await currentUser.save());
+        } catch (error) {
+            throw new UnprocessableEntityException(error.message);
+        }
+    }
+
+    async unFavorite(user: UserEntity, slug: string): Promise<IArticle> {
+        let article: ArticleEntity = await this.findArticleWithLikes(slug);
+        let currentUser: UserEntity =
+            await this.profileService.findByNameWithLikesAndFollowing(user.username);
+
+        const isLikes: boolean = currentUser.likes.findIndex(art => art.id === article.id) !== -1;
+
+        if (!isLikes)
+            return await this.getArticle(article, currentUser);
+
+        currentUser.likes = currentUser.likes.filter(art => art.id !== article.id);
+        article.likes = article.likes.filter(us => us.id !== currentUser.id);
+
+        article.favoritesCount -= 1;
+
+        if (article.favoritesCount === 0)
+            article.favorited = false;
+        try {
+            return this.getArticle(await article.save(), await currentUser.save());
+        } catch (error) {
+            throw new UnprocessableEntityException(error.message);
+        }
+    }
 
 
 

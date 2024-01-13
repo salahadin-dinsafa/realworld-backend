@@ -29,6 +29,14 @@ export class ProfileService {
         }
     }
 
+    async findByNameWithLikesAndFollowing(username: string): Promise<UserEntity> {
+        try {
+            return await this.userRepository.findOne({ where: { username }, relations: ['following', 'likes'] })
+        } catch (error) {
+
+        }
+    }
+
 
 
     async follow(username: string, currentUser: UserEntity): Promise<IProfile> {
