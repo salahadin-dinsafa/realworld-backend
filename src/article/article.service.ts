@@ -16,6 +16,7 @@ import { IComment } from "./interface/comment.interface";
 import { IAddComment } from "./interface/add-comment.interface";
 import { CommentEntity } from "./entities/comment.entity";
 import { IComments } from "./interface/comments.interface";
+import { ITag } from "./interface/tag.interface";
 
 @Injectable()
 export class ArticleService {
@@ -260,6 +261,20 @@ export class ArticleService {
             return this.getArticle(await article.save(), await currentUser.save());
         } catch (error) {
             throw new UnprocessableEntityException(error.message);
+        }
+    }
+
+    // Tag
+
+    async findTags(): Promise<ITag> {
+        let tags: string[] = [];
+        (await this.articleRepository.find()).map(article => article.tagList.map(tag => {
+            if (!tags.find(t => t === tag))
+                tags.push(tag)
+        }))
+
+        return {
+            tags
         }
     }
 
