@@ -2,16 +2,16 @@ import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query, U
 
 import { AuthGuard } from "@nestjs/passport";
 
-import { ArticleService } from "./article.service";
+import { ArticleService } from "../article.service";
 import { UserEntity } from "src/user/entities/user.entity";
 import { User } from "src/user/decorators/user.decorator";
-import { CreateArticleDto } from "./dto/create-article.dto";
-import { IArticle } from "./interface/article.interface";
-import { UpdateArticleDto } from "./dto/update-article.dto";
-import { FeedPaginationDto } from "./dto/feed-pagination.dto";
-import { AddCommentDto } from "./dto/add-comment.dto";
-import { IComment } from "./interface/comment.interface";
-import { IComments } from "./interface/comments.interface";
+import { CreateArticleDto } from "../dto/create-article.dto";
+import { IArticle } from "../interface/article.interface";
+import { UpdateArticleDto } from "../dto/update-article.dto";
+import { FeedPaginationDto } from "../dto/feed-pagination.dto";
+import { AddCommentDto } from "../dto/add-comment.dto";
+import { IComment } from "../interface/comment.interface";
+import { IComments } from "../interface/comments.interface";
 
 @Controller('articles')
 export class ArticleController {
@@ -87,7 +87,7 @@ export class ArticleController {
         @User() user: UserEntity,
         @Param('slug') slug: string,
         @Param('id', ParseIntPipe) id: number,
-    ): Promise<void>{
+    ): Promise<void> {
         return this.articleService.removeComment(user, slug, id);
     }
 
