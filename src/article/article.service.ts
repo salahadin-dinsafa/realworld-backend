@@ -17,6 +17,7 @@ import { IAddComment } from "./interface/add-comment.interface";
 import { CommentEntity } from "./entities/comment.entity";
 import { IComments } from "./interface/comments.interface";
 import { ITag } from "./interface/tag.interface";
+import { IPagination } from "./interface/pagination.interface";
 
 @Injectable()
 export class ArticleService {
@@ -28,6 +29,42 @@ export class ArticleService {
         private readonly profileService: ProfileService,
         private readonly datasource: DataSource
     ) { }
+
+    async find(user: UserEntity, pagination: IPagination): Promise<IArticles> {
+        const { tag, author, favorited, limit, offset } = pagination;
+
+        const queryBuilder =
+            this.datasource
+                .getRepository(ArticleEntity)
+                .createQueryBuilder("article")
+                .leftJoinAndSelect("article.author", "author")
+                .leftJoinAndSelect("article.likes", "favorited")
+                .addOrderBy('updatedAt', 'DESC');
+
+        try {
+            tag ?
+                queryBuilder.andWhere('article.tagList like :tag', { tag: `%${tag}%` }) : null;
+            author ?
+                queryBuilder.andWhere('author.username = :author', { author }) : null;
+            favorited ?
+                queryBuilder.andWhere('favorited.username = :favorited', { favorited }) : null;
+            limit ?
+                queryBuilder.limit(limit) : queryBuilder.limit(20);
+            offset ?
+                queryBuilder.offset(limit) : queryBuilder.offset(0);
+
+            const articles: ArticleEntity[] = await queryBuilder.getMany();
+
+            return {
+                articles: await Promise.all(
+                    articles.map(async article => (await this.getArticle(article, user)).article)),
+                articlesCount: articles.length,
+            }
+
+        } catch (error) {
+            throw new UnprocessableEntityException(error.message);
+        }
+    }
 
     async findBySlug(slug: string): Promise<ArticleEntity> {
         let article: ArticleEntity;

@@ -12,10 +12,20 @@ import { FeedPaginationDto } from "../dto/feed-pagination.dto";
 import { AddCommentDto } from "../dto/add-comment.dto";
 import { IComment } from "../interface/comment.interface";
 import { IComments } from "../interface/comments.interface";
+import { PaginationDto } from "../dto/pagination.dto";
+import { IArticles } from "../interface/articles.interface";
 
 @Controller('articles')
 export class ArticleController {
     constructor(private readonly articleService: ArticleService) { }
+
+    @Get()
+    find(
+        @User() user: UserEntity,
+        @Query() paginationDto: PaginationDto,
+    ): Promise<IArticles> {
+        return this.articleService.find(user, paginationDto);
+    }
 
     @UseGuards(AuthGuard('jwt'))
     @Post()
@@ -50,7 +60,7 @@ export class ArticleController {
     feed(
         @User() user: UserEntity,
         @Query() feedPaginationDto: FeedPaginationDto,
-    ): Promise<any> {
+    ): Promise<IArticles> {
         return this.articleService.feed(user, feedPaginationDto);
     }
 
