@@ -6,7 +6,7 @@ export interface IComment {
 
 export interface ICommentEle {
     id: number;
-    createAt: Date;
+    createdAt: Date;
     updatedAt: Date;
     body: string;
     author: IProfileEle

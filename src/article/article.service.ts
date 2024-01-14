@@ -352,7 +352,7 @@ export class ArticleService {
         return {
             comment: {
                 id: comment.id,
-                createAt: comment.createdAt,
+                createdAt: comment.createdAt,
                 updatedAt: comment.updatedAt,
                 body: comment.body,
                 author: this.profileService.getProfile(user, currentUser).profile
