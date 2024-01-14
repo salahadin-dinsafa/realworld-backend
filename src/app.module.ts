@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common/decorators/modules/module.decorator';
-import { APP_GUARD, APP_PIPE } from '@nestjs/core/constants';
+import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core/constants';
 import { ValidationPipe } from '@nestjs/common/pipes/validation.pipe';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -11,6 +11,8 @@ import { ormConfig } from './common/db/ormconfig.datasource';
 import { OptionalJwtAuthGuard } from './common/guard/jwt-auth.guard';
 import { ProfileModule } from './profile/profile.module';
 import { ArticleModule } from './article/article.module';
+import { AllExceptionFilter } from './common/filter/all-exception.filter';
+import { validationExceptionFactory } from './common/filter/dto.exception';
 
 @Module({
     imports: [
@@ -35,6 +37,7 @@ import { ArticleModule } from './article/article.module';
         {
             provide: APP_PIPE,
             useFactory: () => new ValidationPipe({
+                exceptionFactory: validationExceptionFactory,
                 whitelist: true,
                 forbidNonWhitelisted: true,
                 transform: true,
@@ -44,7 +47,11 @@ import { ArticleModule } from './article/article.module';
         {
             provide: APP_GUARD,
             useClass: OptionalJwtAuthGuard
-        }
+        },
+        {
+            provide: APP_FILTER,
+            useClass: AllExceptionFilter
+        },
 
     ]
 })
