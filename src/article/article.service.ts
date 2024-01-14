@@ -151,14 +151,16 @@ export class ArticleService {
                     .leftJoinAndSelect('article.author', 'author')
                     .addOrderBy('article.updatedAt', 'DESC')
 
-            let followingId: number[] =
-                (await this.profileService.findByNameWithFollowing(currentUser.username))
-                    .following
-                    .map(user => user.id);
+            let followingId: number[] = [-1];
+            (await this.profileService.findByNameWithFollowing(currentUser.username))
+                .following
+                .map(user => {
+                    followingId.push(user.id)
+                });
 
-            queryBuilder.andWhere('author.id IN(:...ids)', { ids: followingId });
+            queryBuilder.andWhere('author.id IN(:...followingId)', { followingId });
 
-            queryBuilder.offset(offset);
+            queryBuilder.offset(offset ? offset : 0);
             queryBuilder.limit(limit ? limit : 20);
 
             let result: IArticleEle[] =
@@ -213,11 +215,14 @@ export class ArticleService {
 
 
     async findComments(user: UserEntity, slug: string): Promise<IComments> {
-        const article: ArticleEntity = await this.findArticleWithComment(slug);
+        let comments =
+            await this.commentRepository.find({ relations: ['article', 'author'] })
+
+        comments = comments.filter(com => com.article.slug === slug);
         try {
             return {
                 comments: await Promise.all(
-                    article.comments.map(
+                    comments.map(
                         async comment => (await this.getComment(comment, user)).comment)
                 )
             }
@@ -328,7 +333,7 @@ export class ArticleService {
                 slug: article.slug,
                 title: article.title,
                 description: article.description,
-                body: article.description,
+                body: article.body,
                 tagList: article.tagList,
                 createdAt: article.createdAt,
                 updatedAt: article.updatedAt,
