@@ -51,7 +51,7 @@ export class ArticleService {
             limit ?
                 queryBuilder.limit(limit) : queryBuilder.limit(20);
             offset ?
-                queryBuilder.offset(limit) : queryBuilder.offset(0);
+                queryBuilder.offset(offset) : queryBuilder.offset(0);
 
             const articles: ArticleEntity[] = await queryBuilder.getMany();
 
