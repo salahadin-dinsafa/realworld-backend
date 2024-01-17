@@ -29,9 +29,9 @@ import { validationExceptionFactory } from './common/filter/dto.exception';
         TypeOrmModule.forRootAsync({
             useFactory: ormConfig,
         }),
-        AuthModule,
-        ProfileModule,
         ArticleModule,
+        ProfileModule,
+        AuthModule,
     ],
     providers: [
         {

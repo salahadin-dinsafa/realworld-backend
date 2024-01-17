@@ -1,6 +1,8 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from "@nestjs/common";
 
 import { AuthGuard } from "@nestjs/passport";
+import { ApiTags } from "@nestjs/swagger/dist/decorators/api-use-tags.decorator";
+import { ApiOperation } from "@nestjs/swagger/dist/decorators/api-operation.decorator";
 
 import { ArticleService } from "../article.service";
 import { UserEntity } from "src/user/entities/user.entity";
@@ -9,16 +11,32 @@ import { CreateArticleDto } from "../dto/create-article.dto";
 import { IArticle } from "../interface/article.interface";
 import { UpdateArticleDto } from "../dto/update-article.dto";
 import { FeedPaginationDto } from "../dto/feed-pagination.dto";
-import { AddCommentDto } from "../dto/add-comment.dto";
-import { IComment } from "../interface/comment.interface";
-import { IComments } from "../interface/comments.interface";
 import { PaginationDto } from "../dto/pagination.dto";
 import { IArticles } from "../interface/articles.interface";
 
+
+@ApiTags('Articles')
 @Controller('articles')
 export class ArticleController {
     constructor(private readonly articleService: ArticleService) { }
 
+    @ApiOperation({
+        summary: 'Get recent articles from users you follow',
+        description: 'Get most recent articles from users you follow. Use query parameters to limit. Auth is required'
+    })
+    @UseGuards(AuthGuard('jwt'))
+    @Get('feed')
+    feed(
+        @User() user: UserEntity,
+        @Query() feedPaginationDto: FeedPaginationDto,
+    ): Promise<IArticles> {
+        return this.articleService.feed(user, feedPaginationDto);
+    }
+
+    @ApiOperation({
+        summary: 'Get recent articles globally',
+        description: 'Get most recent articles globally. Use query parameters to filter results. Auth is optional'
+    })
     @Get()
     find(
         @User() user: UserEntity,
@@ -27,6 +45,10 @@ export class ArticleController {
         return this.articleService.find(user, paginationDto);
     }
 
+    @ApiOperation({
+        summary: 'Create an article',
+        description: 'Create an article. Auth is required'
+    })
     @UseGuards(AuthGuard('jwt'))
     @Post()
     create(
@@ -36,6 +58,23 @@ export class ArticleController {
         return this.articleService.create(user, createArticleDto);
     }
 
+    @ApiOperation({
+        summary: 'Get an article',
+        description: 'Get an article. Auth not required'
+    })
+    @Get(':slug')
+    findOne(
+        @User() user: UserEntity,
+        @Param('slug') slug: string,
+    ): Promise<IArticle> {
+        return this.articleService.findOne(user, slug);
+
+    }
+
+    @ApiOperation({
+        summary: 'Update an article',
+        description: 'Update an article. Auth is required'
+    })
     @UseGuards(AuthGuard('jwt'))
     @Put(":slug")
     update(
@@ -46,6 +85,10 @@ export class ArticleController {
         return this.articleService.update(user, slug, updateArticleDto);
     }
 
+    @ApiOperation({
+        summary: 'Delete an article',
+        description: 'Delete an article. Auth is required'
+    })
     @UseGuards(AuthGuard('jwt'))
     @Delete(':slug')
     delete(
@@ -55,51 +98,8 @@ export class ArticleController {
         return this.articleService.delete(user, slug);
     }
 
-    @UseGuards(AuthGuard('jwt'))
-    @Get('feed')
-    feed(
-        @User() user: UserEntity,
-        @Query() feedPaginationDto: FeedPaginationDto,
-    ): Promise<IArticles> {
-        return this.articleService.feed(user, feedPaginationDto);
-    }
 
-    @Get(':slug')
-    findOne(
-        @User() user: UserEntity,
-        @Param('slug') slug: string,
-    ): Promise<IArticle> {
-        return this.articleService.findOne(user, slug);
 
-    }
-
-    @UseGuards(AuthGuard('jwt'))
-    @Post(':slug/comments')
-    addCommentToArticle(
-        @User() user: UserEntity,
-        @Param('slug') slug: string,
-        @Body() addCommentDto: AddCommentDto
-    ): Promise<IComment> {
-        return this.articleService.addComment(user, slug, addCommentDto)
-    }
-
-    @Get(':slug/comments')
-    findComments(
-        @User() user: UserEntity,
-        @Param('slug') slug: string,
-    ): Promise<IComments> {
-        return this.articleService.findComments(user, slug);
-    }
-
-    @UseGuards(AuthGuard('jwt'))
-    @Delete(":slug/comments/:id")
-    removeComment(
-        @User() user: UserEntity,
-        @Param('slug') slug: string,
-        @Param('id', ParseIntPipe) id: number,
-    ): Promise<void> {
-        return this.articleService.removeComment(user, slug, id);
-    }
 
 
 }
