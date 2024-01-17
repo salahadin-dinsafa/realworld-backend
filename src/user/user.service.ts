@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common/decorators/core/injectable.decorator"
 
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm/repository/Repository";
-import * as bcrypt from 'bcryptjs';
+import * as argon from 'argon2';
 import { JwtService } from "@nestjs/jwt";
 
 import { UserEntity } from "./entities/user.entity";
@@ -24,7 +24,7 @@ export class UserService {
         try {
             return await this.userRepository.save({
                 ...registration.user,
-                password: bcrypt.hashSync(registration.user.password, 15),
+                password: await argon.hash(registration.user.password),
             })
         } catch (error) {
             if (error.code === 'ER_DUP_ENTRY')
@@ -37,7 +37,7 @@ export class UserService {
     async update(user: UserEntity, update: IUpdate): Promise<IUser> {
         Object.assign(user, update.user);
         if (update.user.password)
-            user.password = bcrypt.hashSync(update.user.password, 15);
+            user.password = await argon.hash(update.user.password);
 
         try {
             return await this.getUser(await user.save());

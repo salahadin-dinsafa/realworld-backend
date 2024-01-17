@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common/decorators/core/injectable.decorator";
 import { UnauthorizedException, UnprocessableEntityException } from "@nestjs/common";
 
-import * as bcrypt from 'bcryptjs';
+import * as argon from 'argon2';
 
 import { IRegistration } from "./interface/registration.interface";
 import { IUser } from "src/user/interface/user.interface";
@@ -13,7 +13,7 @@ import { ILogin } from "./interface/login.interface";
 export class AuthService {
     constructor(
         private readonly userService: UserService,
-        
+
     ) { }
 
     async register(registration: IRegistration): Promise<IUser> {
@@ -27,7 +27,7 @@ export class AuthService {
         if (!user)
             throw new UnauthorizedException('user not authorize');
 
-        const isValidPass: boolean = bcrypt.compareSync(login.user.password, user.password);
+        const isValidPass: boolean = await argon.verify(user.password, login.user.password);
 
         if (!isValidPass)
             throw new UnauthorizedException('user not authorize');
@@ -39,5 +39,5 @@ export class AuthService {
         }
     }
 
-    
+
 }
