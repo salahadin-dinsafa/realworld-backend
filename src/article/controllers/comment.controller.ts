@@ -10,8 +10,9 @@ import { UserEntity } from "src/user/entities/user.entity";
 import { AddCommentDto } from "../dto/add-comment.dto";
 import { IComment } from "../interface/comment.interface";
 import { IComments } from "../interface/comments.interface";
+import { ApiParam } from "@nestjs/swagger/dist/decorators/api-param.decorator";
 
-@ApiTags('Comment')
+@ApiTags('Comments')
 @Controller('articles/:slug/comments')
 export class CommentController {
     constructor(private readonly articleService: ArticleService) { }
@@ -20,6 +21,11 @@ export class CommentController {
     @ApiOperation({
         summary: 'Get comments from an article',
         description: 'Get the comments for an article. Auth is optional'
+    })
+    @ApiParam({
+        required: true,
+        name: "slug",
+        description: 'Slug of the article that you want to get comments for'
     })
     @Get()
     findComments(
@@ -32,6 +38,11 @@ export class CommentController {
     @ApiOperation({
         summary: 'Create a comment for an article',
         description: 'Create a comment for an article. Auth is required'
+    })
+    @ApiParam({
+        required: true,
+        name: "slug",
+        description: 'Slug of the article that you want to create a comment for'
     })
     @UseGuards(AuthGuard('jwt'))
     @Post()
@@ -46,6 +57,16 @@ export class CommentController {
     @ApiOperation({
         summary: 'Delete a comment for an article',
         description: 'Delete a comment for an article. Auth is required'
+    })
+    @ApiParam({
+        required: true,
+        name: "slug",
+        description: 'Slug of the article that you want to delete a comment for'
+    })
+    @ApiParam({
+        required: true,
+        name: "id",
+        description: 'ID of the comment you want to delete'
     })
     @UseGuards(AuthGuard('jwt'))
     @Delete(":id")

@@ -13,6 +13,7 @@ import { UpdateArticleDto } from "../dto/update-article.dto";
 import { FeedPaginationDto } from "../dto/feed-pagination.dto";
 import { PaginationDto } from "../dto/pagination.dto";
 import { IArticles } from "../interface/articles.interface";
+import { ApiParam } from "@nestjs/swagger/dist/decorators/api-param.decorator";
 
 
 @ApiTags('Articles')
@@ -62,6 +63,11 @@ export class ArticleController {
         summary: 'Get an article',
         description: 'Get an article. Auth not required'
     })
+    @ApiParam({
+        description: 'Slug of the article to get',
+        name: 'slug',
+        required: true
+    })
     @Get(':slug')
     findOne(
         @User() user: UserEntity,
@@ -74,6 +80,11 @@ export class ArticleController {
     @ApiOperation({
         summary: 'Update an article',
         description: 'Update an article. Auth is required'
+    })
+    @ApiParam({
+        description: 'Slug of the article to update',
+        name: 'slug',
+        required: true
     })
     @UseGuards(AuthGuard('jwt'))
     @Put(":slug")
@@ -88,6 +99,11 @@ export class ArticleController {
     @ApiOperation({
         summary: 'Delete an article',
         description: 'Delete an article. Auth is required'
+    })
+    @ApiParam({
+        description: 'Slug of the article to delete',
+        name: 'slug',
+        required: true
     })
     @UseGuards(AuthGuard('jwt'))
     @Delete(':slug')

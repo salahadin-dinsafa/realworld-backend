@@ -8,8 +8,9 @@ import { ProfileService } from './profile.service';
 import { User } from "src/user/decorators/user.decorator";
 import { UserEntity } from "src/user/entities/user.entity";
 import { IProfile } from "./interfaces/profile.interface";
+import { ApiParam } from "@nestjs/swagger/dist/decorators/api-param.decorator";
 
-@ApiTags('Profiles')
+@ApiTags('Profile')
 @Controller('profiles')
 export class ProfileController {
     constructor(private readonly profileService: ProfileService) { }
@@ -17,6 +18,11 @@ export class ProfileController {
     @ApiOperation({
         summary: 'Get a profile',
         description: 'Get a profile of a user of the system. Auth is optional'
+    })
+    @ApiParam({
+        name: 'username',
+        required: true,
+        description: 'Username of the profile to get'
     })
     @Get(':username')
     find(
@@ -29,6 +35,11 @@ export class ProfileController {
     @ApiOperation({
         summary: 'Follow  a user',
         description: 'Follow a user by username'
+    })
+    @ApiParam({
+        name: 'username',
+        required: true,
+        description: 'Username of the profile you want to follow'
     })
     @HttpCode(200)
     @UseGuards(AuthGuard('jwt'))
@@ -43,6 +54,11 @@ export class ProfileController {
     @ApiOperation({
         summary: 'Unfollow  a user',
         description: 'unFollow a user by username'
+    })
+    @ApiParam({
+        name: 'username',
+        required: true,
+        description: 'Username of the profile you want to unfollow'
     })
     @UseGuards(AuthGuard('jwt'))
     @Delete(':username/follow')

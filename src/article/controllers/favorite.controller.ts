@@ -8,8 +8,9 @@ import { ArticleService } from "../article.service";
 import { UserEntity } from "src/user/entities/user.entity";
 import { User } from "src/user/decorators/user.decorator";
 import { IArticle } from "../interface/article.interface";
+import { ApiParam } from "@nestjs/swagger/dist/decorators/api-param.decorator";
 
-@ApiTags('Favorite')
+@ApiTags('Favorites')
 @Controller('articles/:slug/favorite')
 export class FavoriteController {
     constructor(private readonly articleService: ArticleService) { }
@@ -17,6 +18,10 @@ export class FavoriteController {
     @ApiOperation({
         summary: 'Favorite an article',
         description: 'Favorite an article. Auth is required'
+    })
+    @ApiParam({
+        name: 'slug',
+        description: 'Slug of the article that you want to favorite'
     })
     @UseGuards(AuthGuard('jwt'))
     @Post()
@@ -30,6 +35,10 @@ export class FavoriteController {
     @ApiOperation({
         summary: 'Unfavorite an article',
         description: 'Unfavorite an article. Auth is required'
+    })
+    @ApiParam({
+        name: 'slug',
+        description: 'Slug of the article that you want to unfavorite'
     })
     @UseGuards(AuthGuard('jwt'))
     @Delete()
