@@ -4,6 +4,7 @@ import { Body, Get, Put, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport/dist/auth.guard";
 import { ApiTags } from "@nestjs/swagger/dist/decorators/api-use-tags.decorator";
 import { ApiOperation } from "@nestjs/swagger/dist/decorators/api-operation.decorator";
+import { ApiBearerAuth } from "@nestjs/swagger/dist/decorators/api-bearer.decorator";
 
 import { UserService } from "./user.service";
 import { UserEntity } from "./entities/user.entity";
@@ -20,6 +21,7 @@ export class UserController {
         summary: 'Get current user',
         description: 'Gets the currently logged-in user'
     })
+    @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Get()
     find(@User() user: UserEntity): Promise<IUser> {
@@ -30,6 +32,7 @@ export class UserController {
         summary: 'Update current user',
         description: 'Updated user information for current user'
     })
+    @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Put()
     update(

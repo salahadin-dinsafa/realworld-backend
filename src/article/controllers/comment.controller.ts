@@ -2,6 +2,8 @@ import { Controller, UseGuards, Post, Param, Body, Get, Delete, ParseIntPipe } f
 
 import { AuthGuard } from "@nestjs/passport";
 import { ApiTags } from "@nestjs/swagger/dist/decorators/api-use-tags.decorator";
+import { ApiParam } from "@nestjs/swagger/dist/decorators/api-param.decorator";
+import { ApiBearerAuth } from "@nestjs/swagger/dist/decorators/api-bearer.decorator";
 import { ApiOperation } from "@nestjs/swagger/dist/decorators/api-operation.decorator";
 
 import { ArticleService } from "../article.service";
@@ -10,7 +12,6 @@ import { UserEntity } from "src/user/entities/user.entity";
 import { AddCommentDto } from "../dto/add-comment.dto";
 import { IComment } from "../interface/comment.interface";
 import { IComments } from "../interface/comments.interface";
-import { ApiParam } from "@nestjs/swagger/dist/decorators/api-param.decorator";
 
 @ApiTags('Comments')
 @Controller('articles/:slug/comments')
@@ -44,6 +45,7 @@ export class CommentController {
         name: "slug",
         description: 'Slug of the article that you want to create a comment for'
     })
+    @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Post()
     addCommentToArticle(
@@ -68,6 +70,7 @@ export class CommentController {
         name: "id",
         description: 'ID of the comment you want to delete'
     })
+    @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Delete(":id")
     removeComment(

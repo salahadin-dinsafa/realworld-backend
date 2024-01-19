@@ -3,12 +3,13 @@ import { Controller, Delete, Param, Post, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { ApiTags } from "@nestjs/swagger/dist/decorators/api-use-tags.decorator";
 import { ApiOperation } from "@nestjs/swagger/dist/decorators/api-operation.decorator";
+import { ApiParam } from "@nestjs/swagger/dist/decorators/api-param.decorator";
+import { ApiBearerAuth } from "@nestjs/swagger/dist/decorators/api-bearer.decorator";
 
 import { ArticleService } from "../article.service";
 import { UserEntity } from "src/user/entities/user.entity";
 import { User } from "src/user/decorators/user.decorator";
 import { IArticle } from "../interface/article.interface";
-import { ApiParam } from "@nestjs/swagger/dist/decorators/api-param.decorator";
 
 @ApiTags('Favorites')
 @Controller('articles/:slug/favorite')
@@ -23,6 +24,7 @@ export class FavoriteController {
         name: 'slug',
         description: 'Slug of the article that you want to favorite'
     })
+    @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Post()
     favoriteArticle(
@@ -40,6 +42,7 @@ export class FavoriteController {
         name: 'slug',
         description: 'Slug of the article that you want to unfavorite'
     })
+    @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Delete()
     unFavorite(
