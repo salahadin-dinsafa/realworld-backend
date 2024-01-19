@@ -7,6 +7,8 @@ import { SwaggerModule } from "@nestjs/swagger/dist/swagger-module";
 
 config();
 
+declare const module: any;
+
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
     app.enableCors();
@@ -45,6 +47,11 @@ async function bootstrap() {
         ignoreGlobalPrefix: true,
     });
     SwaggerModule.setup('api-docs', app, document);
+
+    if (module.hot) {
+        module.hot.accept();
+        module.hot.dispose(() => app.close());
+    }
 
     await app.listen(3000);
 }

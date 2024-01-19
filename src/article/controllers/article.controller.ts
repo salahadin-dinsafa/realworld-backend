@@ -3,6 +3,8 @@ import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } fro
 import { AuthGuard } from "@nestjs/passport";
 import { ApiTags } from "@nestjs/swagger/dist/decorators/api-use-tags.decorator";
 import { ApiOperation } from "@nestjs/swagger/dist/decorators/api-operation.decorator";
+import { ApiParam } from "@nestjs/swagger/dist/decorators/api-param.decorator";
+import { ApiBearerAuth } from "@nestjs/swagger/dist/decorators/api-bearer.decorator";
 
 import { ArticleService } from "../article.service";
 import { UserEntity } from "src/user/entities/user.entity";
@@ -13,7 +15,6 @@ import { UpdateArticleDto } from "../dto/update-article.dto";
 import { FeedPaginationDto } from "../dto/feed-pagination.dto";
 import { PaginationDto } from "../dto/pagination.dto";
 import { IArticles } from "../interface/articles.interface";
-import { ApiParam } from "@nestjs/swagger/dist/decorators/api-param.decorator";
 
 
 @ApiTags('Articles')
@@ -25,6 +26,7 @@ export class ArticleController {
         summary: 'Get recent articles from users you follow',
         description: 'Get most recent articles from users you follow. Use query parameters to limit. Auth is required'
     })
+    @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Get('feed')
     feed(
@@ -50,6 +52,7 @@ export class ArticleController {
         summary: 'Create an article',
         description: 'Create an article. Auth is required'
     })
+    @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Post()
     create(
@@ -86,6 +89,7 @@ export class ArticleController {
         name: 'slug',
         required: true
     })
+    @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Put(":slug")
     update(
@@ -105,6 +109,7 @@ export class ArticleController {
         name: 'slug',
         required: true
     })
+    @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Delete(':slug')
     delete(

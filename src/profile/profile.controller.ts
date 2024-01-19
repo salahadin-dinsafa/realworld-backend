@@ -3,12 +3,13 @@ import { Controller, Delete, Get, HttpCode, Param, Post, UseGuards } from "@nest
 import { AuthGuard } from "@nestjs/passport";
 import { ApiTags } from "@nestjs/swagger/dist/decorators/api-use-tags.decorator";
 import { ApiOperation } from "@nestjs/swagger/dist/decorators/api-operation.decorator";
+import { ApiParam } from "@nestjs/swagger/dist/decorators/api-param.decorator";
+import { ApiBearerAuth } from "@nestjs/swagger/dist/decorators/api-bearer.decorator";
 
 import { ProfileService } from './profile.service';
 import { User } from "src/user/decorators/user.decorator";
 import { UserEntity } from "src/user/entities/user.entity";
 import { IProfile } from "./interfaces/profile.interface";
-import { ApiParam } from "@nestjs/swagger/dist/decorators/api-param.decorator";
 
 @ApiTags('Profile')
 @Controller('profiles')
@@ -41,6 +42,7 @@ export class ProfileController {
         required: true,
         description: 'Username of the profile you want to follow'
     })
+    @ApiBearerAuth()
     @HttpCode(200)
     @UseGuards(AuthGuard('jwt'))
     @Post(':username/follow')
@@ -60,6 +62,7 @@ export class ProfileController {
         required: true,
         description: 'Username of the profile you want to unfollow'
     })
+    @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Delete(':username/follow')
     unFollow(
