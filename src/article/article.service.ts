@@ -81,9 +81,13 @@ export class ArticleService {
 
     async create(author: UserEntity, createArticle: ICreateArticle): Promise<IArticle> {
         const titleArray: string[] = createArticle.article.title.toLowerCase().split(' ');
+        titleArray.push(
+            Math.random().toString(36).substring(2, 7)
+        )
         try {
             const article = await this.articleRepository.save({
                 slug: titleArray.join('-'),
+                tagList: createArticle.article.tagList || [],
                 ...createArticle.article,
                 author
             })

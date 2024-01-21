@@ -15,6 +15,8 @@ import { UpdateArticleDto } from "../dto/update-article.dto";
 import { FeedPaginationDto } from "../dto/feed-pagination.dto";
 import { PaginationDto } from "../dto/pagination.dto";
 import { IArticles } from "../interface/articles.interface";
+import { ApiUnauthorizedResponse, ApiOkResponse } from "@nestjs/swagger/dist/decorators/api-response.decorator";
+import { Articles } from "src/common/dto/swagger.dt";
 
 
 @ApiTags('Articles')
@@ -22,6 +24,13 @@ import { IArticles } from "../interface/articles.interface";
 export class ArticleController {
     constructor(private readonly articleService: ArticleService) { }
 
+    @ApiOkResponse({
+        description: 'Multiple articles',
+        type: Articles,
+    })
+    @ApiUnauthorizedResponse({
+        description: 'Unauthorized',
+    })
     @ApiOperation({
         summary: 'Get recent articles from users you follow',
         description: 'Get most recent articles from users you follow. Use query parameters to limit. Auth is required'
