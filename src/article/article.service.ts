@@ -219,6 +219,7 @@ export class ArticleService {
 
 
     async findComments(user: UserEntity, slug: string): Promise<IComments> {
+        await this.findBySlug(slug)
         let comments =
             await this.commentRepository.find({ relations: ['article', 'author'] })
 

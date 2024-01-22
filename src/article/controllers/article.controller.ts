@@ -37,7 +37,7 @@ export class ArticleController {
     })
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
-    @Get('feed')
+    @Get('/feed')
     feed(
         @User() user: UserEntity,
         @Query() feedPaginationDto: FeedPaginationDto,
