@@ -8,6 +8,6 @@ const seedDataSource = (): MysqlConnectionOptions => ({
     migrations: [__dirname + '/seed/**/*{.ts,.js}'],
 })
 
-const datasource: DataSource = new DataSource(ormConfig());
+const datasource: DataSource = new DataSource(seedDataSource());
 
 export default datasource;
