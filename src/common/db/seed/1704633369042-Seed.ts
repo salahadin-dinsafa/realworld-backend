@@ -54,6 +54,30 @@ export class Seed1704633369042 implements MigrationInterface {
             1,
             2)
         `);
+        await queryRunner.query(`
+        INSERT INTO \`follower\` (\`usersId_1\`,\`usersId_2\`) 
+        VALUES (
+            1,
+            2)
+        `);
+        await queryRunner.query(`
+        INSERT INTO \`following\` (\`usersId_1\`,\`usersId_2\`) 
+        VALUES (
+            2,
+            1)
+        `);
+        await queryRunner.query(`
+        INSERT INTO \`users_likes_articles\` (\`usersId\`,\`articlesId\`) 
+        VALUES (
+            1,
+            1)
+        `);
+        await queryRunner.query(`
+        INSERT INTO \`users_likes_articles\` (\`usersId\`,\`articlesId\`) 
+        VALUES (
+            1,
+            2)
+        `);
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> { }
