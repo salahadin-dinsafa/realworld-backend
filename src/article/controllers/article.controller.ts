@@ -15,8 +15,8 @@ import { UpdateArticleDto } from "../dto/update-article.dto";
 import { FeedPaginationDto } from "../dto/feed-pagination.dto";
 import { PaginationDto } from "../dto/pagination.dto";
 import { IArticles } from "../interface/articles.interface";
-import { ApiUnauthorizedResponse, ApiOkResponse } from "@nestjs/swagger/dist/decorators/api-response.decorator";
-import { Articles } from "src/common/dto/swagger.dt";
+import { ApiUnauthorizedResponse, ApiOkResponse, ApiUnprocessableEntityResponse } from "@nestjs/swagger/dist/decorators/api-response.decorator";
+import { Article, Articles, GenericErrorModel, SingleArticle } from "src/common/dto/swagger.dt";
 
 
 @ApiTags('Articles')
@@ -30,6 +30,10 @@ export class ArticleController {
     })
     @ApiUnauthorizedResponse({
         description: 'Unauthorized',
+    })
+    @ApiUnprocessableEntityResponse({
+        description: 'Unexpected error',
+        type: GenericErrorModel
     })
     @ApiOperation({
         summary: 'Get recent articles from users you follow',
@@ -45,6 +49,14 @@ export class ArticleController {
         return this.articleService.feed(user, feedPaginationDto);
     }
 
+    @ApiOkResponse({
+        description: 'Multiple articles',
+        type: Articles,
+    })
+    @ApiUnprocessableEntityResponse({
+        description: 'Unexpected error',
+        type: GenericErrorModel
+    })
     @ApiOperation({
         summary: 'Get recent articles globally',
         description: 'Get most recent articles globally. Use query parameters to filter results. Auth is optional'
@@ -57,6 +69,17 @@ export class ArticleController {
         return this.articleService.find(user, paginationDto);
     }
 
+    @ApiOkResponse({
+        description: 'Single article',
+        type: SingleArticle,
+    })
+    @ApiUnauthorizedResponse({
+        description: 'Unauthorized',
+    })
+    @ApiUnprocessableEntityResponse({
+        description: 'Unexpected error',
+        type: GenericErrorModel
+    })
     @ApiOperation({
         summary: 'Create an article',
         description: 'Create an article. Auth is required'
@@ -71,6 +94,14 @@ export class ArticleController {
         return this.articleService.create(user, createArticleDto);
     }
 
+    @ApiOkResponse({
+        description: 'Single article',
+        type: SingleArticle,
+    })
+    @ApiUnprocessableEntityResponse({
+        description: 'Unexpected error',
+        type: GenericErrorModel
+    })
     @ApiOperation({
         summary: 'Get an article',
         description: 'Get an article. Auth not required'
@@ -89,6 +120,17 @@ export class ArticleController {
 
     }
 
+    @ApiOkResponse({
+        description: 'Single article',
+        type: SingleArticle,
+    })
+    @ApiUnauthorizedResponse({
+        description: 'Unauthorized',
+    })
+    @ApiUnprocessableEntityResponse({
+        description: 'Unexpected error',
+        type: GenericErrorModel
+    })
     @ApiOperation({
         summary: 'Update an article',
         description: 'Update an article. Auth is required'
@@ -109,6 +151,16 @@ export class ArticleController {
         return this.articleService.update(user, slug, updateArticleDto);
     }
 
+    @ApiOkResponse({
+        description: 'No Content'
+    })
+    @ApiUnauthorizedResponse({
+        description: 'Unauthorized',
+    })
+    @ApiUnprocessableEntityResponse({
+        description: 'Unexpected error',
+        type: GenericErrorModel
+    })
     @ApiOperation({
         summary: 'Delete an article',
         description: 'Delete an article. Auth is required'
