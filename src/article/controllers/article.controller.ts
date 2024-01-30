@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put, Query, UseGuards } from "@nestjs/common";
 
 import { AuthGuard } from "@nestjs/passport";
 import { ApiTags } from "@nestjs/swagger/dist/decorators/api-use-tags.decorator";
@@ -16,7 +16,7 @@ import { FeedPaginationDto } from "../dto/feed-pagination.dto";
 import { PaginationDto } from "../dto/pagination.dto";
 import { IArticles } from "../interface/articles.interface";
 import { ApiUnauthorizedResponse, ApiOkResponse, ApiUnprocessableEntityResponse } from "@nestjs/swagger/dist/decorators/api-response.decorator";
-import { Article, Articles, GenericErrorModel, SingleArticle } from "src/common/dto/swagger.dt";
+import { Articles, GenericErrorModel, SingleArticle } from "src/common/dto/swagger.dt";
 
 
 @ApiTags('Articles')
@@ -84,6 +84,7 @@ export class ArticleController {
         summary: 'Create an article',
         description: 'Create an article. Auth is required'
     })
+    @HttpCode(HttpStatus.OK)
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Post()

@@ -1,4 +1,4 @@
-import { Controller, UseGuards, Post, Param, Body, Get, Delete, ParseIntPipe } from "@nestjs/common";
+import { Controller, UseGuards, Post, Param, Body, Get, Delete, ParseIntPipe, HttpCode, HttpStatus } from "@nestjs/common";
 
 import { AuthGuard } from "@nestjs/passport";
 import { ApiTags } from "@nestjs/swagger/dist/decorators/api-use-tags.decorator";
@@ -12,6 +12,8 @@ import { UserEntity } from "src/user/entities/user.entity";
 import { AddCommentDto } from "../dto/add-comment.dto";
 import { IComment } from "../interface/comment.interface";
 import { IComments } from "../interface/comments.interface";
+import { ApiOkResponse, ApiUnauthorizedResponse, ApiUnprocessableEntityResponse } from "@nestjs/swagger/dist/decorators/api-response.decorator";
+import { Comments, GenericErrorModel, SingleComment } from "src/common/dto/swagger.dt";
 
 @ApiTags('Comments')
 @Controller('articles/:slug/comments')
@@ -19,6 +21,14 @@ export class CommentController {
     constructor(private readonly articleService: ArticleService) { }
 
 
+    @ApiOkResponse({
+        description: 'Multiple comments',
+        type: Comments
+    })
+    @ApiUnprocessableEntityResponse({
+        description: 'Unexpected error',
+        type: GenericErrorModel
+    })
     @ApiOperation({
         summary: 'Get comments from an article',
         description: 'Get the comments for an article. Auth is optional'
@@ -36,6 +46,17 @@ export class CommentController {
         return this.articleService.findComments(user, slug);
     }
 
+    @ApiOkResponse({
+        description: 'Single comments',
+        type: SingleComment
+    })
+    @ApiUnauthorizedResponse({
+        description: 'Unauthorized',
+    })
+    @ApiUnprocessableEntityResponse({
+        description: 'Unexpected error',
+        type: GenericErrorModel
+    })
     @ApiOperation({
         summary: 'Create a comment for an article',
         description: 'Create a comment for an article. Auth is required'
@@ -45,6 +66,7 @@ export class CommentController {
         name: "slug",
         description: 'Slug of the article that you want to create a comment for'
     })
+    @HttpCode(HttpStatus.OK)
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Post()
@@ -56,6 +78,16 @@ export class CommentController {
         return this.articleService.addComment(user, slug, addCommentDto)
     }
 
+    @ApiOkResponse({
+        description: 'No content'
+    })
+    @ApiUnauthorizedResponse({
+        description: 'Unauthorized',
+    })
+    @ApiUnprocessableEntityResponse({
+        description: 'Unexpected error',
+        type: GenericErrorModel
+    })
     @ApiOperation({
         summary: 'Delete a comment for an article',
         description: 'Delete a comment for an article. Auth is required'

@@ -11,12 +11,25 @@ import { UserEntity } from "./entities/user.entity";
 import { User } from "./decorators/user.decorator";
 import { IUser } from "./interface/user.interface";
 import { UpdateDto } from "./dto/update.dto";
+import { ApiOkResponse, ApiUnauthorizedResponse, ApiUnprocessableEntityResponse } from "@nestjs/swagger/dist/decorators/api-response.decorator";
+import { SingleUser, GenericErrorModel } from "src/common/dto/swagger.dt";
 
 @ApiTags('User')
 @Controller('user')
 export class UserController {
     constructor(private readonly userService: UserService) { }
 
+    @ApiOkResponse({
+        description: 'User',
+        type: SingleUser,
+    })
+    @ApiUnauthorizedResponse({
+        description: 'Unauthorized',
+    })
+    @ApiUnprocessableEntityResponse({
+        description: 'Unexpected error',
+        type: GenericErrorModel
+    })
     @ApiOperation({
         summary: 'Get current user',
         description: 'Gets the currently logged-in user'
@@ -28,6 +41,17 @@ export class UserController {
         return this.userService.getUser(user);
     }
 
+    @ApiOkResponse({
+        description: 'User',
+        type: SingleUser,
+    })
+    @ApiUnauthorizedResponse({
+        description: 'Unauthorized',
+    })
+    @ApiUnprocessableEntityResponse({
+        description: 'Unexpected error',
+        type: GenericErrorModel
+    })
     @ApiOperation({
         summary: 'Update current user',
         description: 'Updated user information for current user'

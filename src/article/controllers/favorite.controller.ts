@@ -1,4 +1,4 @@
-import { Controller, Delete, Param, Post, UseGuards } from "@nestjs/common";
+import { Controller, Delete, HttpCode, HttpStatus, Param, Post, UseGuards } from "@nestjs/common";
 
 import { AuthGuard } from "@nestjs/passport";
 import { ApiTags } from "@nestjs/swagger/dist/decorators/api-use-tags.decorator";
@@ -10,16 +10,30 @@ import { ArticleService } from "../article.service";
 import { UserEntity } from "src/user/entities/user.entity";
 import { User } from "src/user/decorators/user.decorator";
 import { IArticle } from "../interface/article.interface";
+import { ApiOkResponse, ApiUnauthorizedResponse, ApiUnprocessableEntityResponse } from "@nestjs/swagger";
+import { SingleArticle, GenericErrorModel } from "src/common/dto/swagger.dt";
 
 @ApiTags('Favorites')
 @Controller('articles/:slug/favorite')
 export class FavoriteController {
     constructor(private readonly articleService: ArticleService) { }
 
+    @ApiOkResponse({
+        description: 'Single article',
+        type: SingleArticle,
+    })
+    @ApiUnauthorizedResponse({
+        description: 'Unauthorized',
+    })
+    @ApiUnprocessableEntityResponse({
+        description: 'Unexpected error',
+        type: GenericErrorModel
+    })
     @ApiOperation({
         summary: 'Favorite an article',
         description: 'Favorite an article. Auth is required'
     })
+    @HttpCode(HttpStatus.OK)
     @ApiParam({
         name: 'slug',
         description: 'Slug of the article that you want to favorite'
@@ -34,6 +48,17 @@ export class FavoriteController {
         return this.articleService.favorite(user, slug);
     }
 
+    @ApiOkResponse({
+        description: 'Single article',
+        type: SingleArticle,
+    })
+    @ApiUnauthorizedResponse({
+        description: 'Unauthorized',
+    })
+    @ApiUnprocessableEntityResponse({
+        description: 'Unexpected error',
+        type: GenericErrorModel
+    })
     @ApiOperation({
         summary: 'Unfavorite an article',
         description: 'Unfavorite an article. Auth is required'

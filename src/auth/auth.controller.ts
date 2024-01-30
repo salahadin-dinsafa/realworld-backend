@@ -9,12 +9,24 @@ import { RegistrationDto } from "./dto/registration.dto";
 import { IUser } from "src/user/interface/user.interface";
 import { AuthService } from "./auth.service";
 import { LoginDto } from "./dto/login.dto";
+import { HttpCode, HttpStatus } from "@nestjs/common";
+import { ApiOkResponse, ApiUnprocessableEntityResponse } from "@nestjs/swagger";
+import { SingleUser, GenericErrorModel } from "src/common/dto/swagger.dt";
 
 @ApiTags('Authentication')
 @Controller('users')
 export class AuthController {
     constructor(private readonly authService: AuthService) { }
 
+    @ApiOkResponse({
+        description: 'User',
+        type: SingleUser,
+    })
+    @ApiUnprocessableEntityResponse({
+        description: 'Unexpected error',
+        type: GenericErrorModel
+    })
+    @HttpCode(HttpStatus.OK)
     @ApiOperation({
         summary: 'Existing user login',
         description: 'Login for existing user'
@@ -24,6 +36,15 @@ export class AuthController {
         return this.authService.login(loginDto);
     }
 
+    @ApiOkResponse({
+        description: 'User',
+        type: SingleUser,
+    })
+    @ApiUnprocessableEntityResponse({
+        description: 'Unexpected error',
+        type: GenericErrorModel
+    })
+    @HttpCode(HttpStatus.OK)
     @ApiOperation({
         summary: 'New user registration',
         description: 'Register a new user'

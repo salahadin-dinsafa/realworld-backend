@@ -20,6 +20,14 @@ export class Profile {
     following: boolean;
 }
 
+export class SingleProfile {
+    @ApiProperty({
+        required: true,
+        type: Profile
+    })
+    profile: Profile
+}
+
 export class Article {
     @ApiProperty({
         required: true
@@ -85,31 +93,56 @@ export class Articles {
     articlesCount: number;
 }
 
-export class NewArticle {
-    title: string;
-    description: string;
-    body: string;
-    tagList: string[];
-}
-
 export class UpdateArticle {
+    @ApiProperty()
     title: string;
+    @ApiProperty()
     description: string;
+    @ApiProperty()
     body: string;
 }
 
 
 export class Comment {
+    @ApiProperty({
+        required: true
+    })
     id: number;
+    @ApiProperty({
+        required: true
+    })
     createdAt: Date;
+    @ApiProperty({
+        required: true
+    })
     updatedAt: Date;
+    @ApiProperty({
+        required: true
+    })
     body: string;
+    @ApiProperty({
+        required: true,
+        type: Profile
+    })
     author: Profile;
 }
 
-export class NewComment {
-    body: string;
+export class SingleComment {
+    @ApiProperty({
+        required: true,
+        type: Comment
+    })
+    comment: Comment;
 }
+
+export class Comments {
+    @ApiProperty({
+        required: true,
+        type: [Comment]
+    })
+    comments: Comment[]
+}
+
 
 class Error {
     @ApiProperty({
@@ -126,29 +159,40 @@ export class GenericErrorModel {
     errors: Error
 }
 
-export class LoginUser {
-    email: string;
-    password: string;
-}
-
-export class NewUser {
-    username: string;
-    email: string;
-    password: string;
-}
-
 export class User {
+    @ApiProperty({
+        required: true
+    })
     email: string;
+    @ApiProperty({
+        required: true
+    })
     token: string;
+    @ApiProperty({
+        required: true
+    })
     username: string;
+    @ApiProperty({
+        required: true
+    })
     bio: string;
+    @ApiProperty({
+        required: true
+    })
     image: string;
 }
 
-export class UpdateUser {
-    email: string;
-    password: string;
-    username: string;
-    bio: string;
-    image: string;
+export class SingleUser {
+    @ApiProperty({
+        required: true,
+        type: User
+    })
+    user: User
+}
+
+export class Tags {
+    @ApiProperty({
+        required: true
+    })
+    tags: string[]
 }

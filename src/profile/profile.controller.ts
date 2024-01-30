@@ -10,12 +10,22 @@ import { ProfileService } from './profile.service';
 import { User } from "src/user/decorators/user.decorator";
 import { UserEntity } from "src/user/entities/user.entity";
 import { IProfile } from "./interfaces/profile.interface";
+import { ApiOkResponse, ApiUnauthorizedResponse, ApiUnprocessableEntityResponse } from "@nestjs/swagger";
+import { SingleProfile, GenericErrorModel } from "src/common/dto/swagger.dt";
 
 @ApiTags('Profile')
 @Controller('profiles')
 export class ProfileController {
     constructor(private readonly profileService: ProfileService) { }
 
+    @ApiOkResponse({
+        description: 'Profile',
+        type: SingleProfile,
+    })
+    @ApiUnprocessableEntityResponse({
+        description: 'Unexpected error',
+        type: GenericErrorModel
+    })
     @ApiOperation({
         summary: 'Get a profile',
         description: 'Get a profile of a user of the system. Auth is optional'
@@ -33,6 +43,17 @@ export class ProfileController {
         return this.profileService.find(username, user);
     }
 
+    @ApiOkResponse({
+        description: 'Profile',
+        type: SingleProfile,
+    })
+    @ApiUnauthorizedResponse({
+        description: 'Unauthorized',
+    })
+    @ApiUnprocessableEntityResponse({
+        description: 'Unexpected error',
+        type: GenericErrorModel
+    })
     @ApiOperation({
         summary: 'Follow  a user',
         description: 'Follow a user by username'
@@ -53,6 +74,17 @@ export class ProfileController {
         return this.profileService.follow(username, user);
     }
 
+    @ApiOkResponse({
+        description: 'Profile',
+        type: SingleProfile,
+    })
+    @ApiUnauthorizedResponse({
+        description: 'Unauthorized',
+    })
+    @ApiUnprocessableEntityResponse({
+        description: 'Unexpected error',
+        type: GenericErrorModel
+    })
     @ApiOperation({
         summary: 'Unfollow  a user',
         description: 'unFollow a user by username'
