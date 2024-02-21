@@ -42,6 +42,8 @@ export class UserService {
         try {
             return await this.getUser(await user.save());
         } catch (error) {
+            if (error.code === 'ER_DUP_ENTRY')
+                throw new UnprocessableEntityException('user already exist');
             throw new UnprocessableEntityException(error.message);
         }
     }
