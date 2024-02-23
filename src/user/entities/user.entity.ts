@@ -18,10 +18,10 @@ export class UserEntity extends BaseEntity {
     @Column()
     password: string;
 
-    @Column({ default: '' })
+    @Column({ default: '', })
     bio: string;
 
-    @Column({ nullable: true })
+    @Column({ type: 'longtext', nullable: true })
     image: string
 
     @ManyToMany(() => UserEntity)
