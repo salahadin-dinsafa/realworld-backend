@@ -1,11 +1,16 @@
 import { Controller, Get } from "@nestjs/common";
 
-import { ApiTags } from "@nestjs/swagger/dist/decorators/api-use-tags.decorator";
-import { ApiOperation } from "@nestjs/swagger/dist/decorators/api-operation.decorator";
 
-import { ArticleService } from "../article.service";
-import { ITag } from "../interface/tag.interface";
-import { ApiOkResponse, ApiUnauthorizedResponse, ApiUnprocessableEntityResponse } from "@nestjs/swagger";
+import {
+    ApiTags,
+    ApiOperation,
+    ApiOkResponse,
+    ApiUnauthorizedResponse,
+    ApiUnprocessableEntityResponse,
+} from "@nestjs/swagger";
+
+import { ITag } from "src/article/interface/tag.interface";
+import { ArticleService } from "src/article/article.service";
 import { Tags, GenericErrorModel } from "src/common/dto/swagger.dt";
 
 @ApiTags('Tags')
@@ -13,7 +18,7 @@ import { Tags, GenericErrorModel } from "src/common/dto/swagger.dt";
 export class TagsController {
     constructor(private readonly articleService: ArticleService) { }
 
-     @ApiOkResponse({
+    @ApiOkResponse({
         description: 'Tags',
         type: Tags,
     })

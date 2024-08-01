@@ -1,11 +1,15 @@
-import { Injectable } from "@nestjs/common/decorators/core/injectable.decorator";
-import { NotFoundException, UnprocessableEntityException } from "@nestjs/common";
 
-import { InjectRepository } from "@nestjs/typeorm";
+import {
+    Injectable,
+    NotFoundException,
+    UnprocessableEntityException,
+} from "@nestjs/common";
+
 import { Repository } from "typeorm";
+import { InjectRepository } from "@nestjs/typeorm";
 
 import { UserEntity } from "src/user/entities/user.entity";
-import { IProfile } from "./interfaces/profile.interface";
+import { IProfile } from "src/profile/interfaces/profile.interface";
 
 @Injectable()
 export class ProfileService {
@@ -18,14 +22,14 @@ export class ProfileService {
         try {
             return await this.userRepository.findOne({ where: { username }, relations: ['follower'] })
         } catch (error) {
-            throw new UnprocessableEntityException(error.message);
+            throw new UnprocessableEntityException({ '': [error.message] });
         }
     }
     async findByNameWithFollowing(username: string): Promise<UserEntity> {
         try {
             return await this.userRepository.findOne({ where: { username }, relations: ['following'] })
         } catch (error) {
-            throw new UnprocessableEntityException(error.message);
+            throw new UnprocessableEntityException({ '': [error.message] });
         }
     }
 
@@ -33,7 +37,7 @@ export class ProfileService {
         try {
             return await this.userRepository.findOne({ where: { username }, relations: ['following', 'likes'] })
         } catch (error) {
-
+            throw new UnprocessableEntityException({ '': [error.message] });
         }
     }
 
@@ -41,7 +45,7 @@ export class ProfileService {
 
     async follow(username: string, currentUser: UserEntity): Promise<IProfile> {
         let user: UserEntity = await this.findByNameWithFollower(username);
-        if (!user) throw new NotFoundException()
+        if (!user) throw new NotFoundException({ '': 'user not found' })
         let cUser = await this.findByNameWithFollowing(currentUser.username);
 
         try {
@@ -49,12 +53,12 @@ export class ProfileService {
             cUser.following.push(user);
             return this.getProfile(await user.save(), await cUser.save());
         } catch (error) {
-            throw new UnprocessableEntityException(error.message)
+            throw new UnprocessableEntityException({ '': [error.message] })
         }
     }
     async unFollow(username: string, currentUser: UserEntity): Promise<IProfile> {
         let user: UserEntity = await this.findByNameWithFollower(username);
-        if (!user) throw new NotFoundException()
+        if (!user) throw new NotFoundException({ 'user': ['not found'] })
 
         let cUser = await this.findByNameWithFollowing(currentUser.username);
 
@@ -68,19 +72,19 @@ export class ProfileService {
 
             return this.getProfile(await user.save(), await cUser.save());
         } catch (error) {
-            throw new UnprocessableEntityException(error.message)
+            throw new UnprocessableEntityException({ '': [error.message] })
         }
     }
 
 
     async find(username: string, currentUser: UserEntity): Promise<IProfile> {
         let user: UserEntity = await this.findByNameWithFollower(username);
-        if (!user) throw new NotFoundException('user not found');
+        if (!user) throw new NotFoundException({ '': 'user not found' });
 
         try {
             return this.getProfile(user, currentUser);
         } catch (error) {
-            throw new UnprocessableEntityException(error.message);
+            throw new UnprocessableEntityException({ '': [error.message] });
         }
     }
 

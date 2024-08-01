@@ -1,10 +1,15 @@
 import {
-    BaseEntity, Column, CreateDateColumn,
-    Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn
+    Entity,
+    Column,
+    ManyToOne,
+    BaseEntity,
+    UpdateDateColumn,
+    CreateDateColumn,
+    PrimaryGeneratedColumn,
 } from "typeorm";
 
 import { UserEntity } from "src/user/entities/user.entity";
-import { ArticleEntity } from "./article.entity";
+import { ArticleEntity } from "src/article/entities/article.entity";
 
 @Entity({ name: 'comments' })
 export class CommentEntity extends BaseEntity {

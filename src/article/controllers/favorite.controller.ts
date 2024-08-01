@@ -1,16 +1,29 @@
-import { Controller, Delete, HttpCode, HttpStatus, Param, Post, UseGuards } from "@nestjs/common";
+import {
+    Post,
+    Param,
+    Delete,
+    HttpCode,
+    UseGuards,
+    Controller,
+    HttpStatus,
+} from "@nestjs/common";
 
+
+import {
+    ApiOkResponse,
+    ApiUnauthorizedResponse,
+    ApiUnprocessableEntityResponse
+} from "@nestjs/swagger";
 import { AuthGuard } from "@nestjs/passport";
-import { ApiTags } from "@nestjs/swagger/dist/decorators/api-use-tags.decorator";
-import { ApiOperation } from "@nestjs/swagger/dist/decorators/api-operation.decorator";
 import { ApiParam } from "@nestjs/swagger/dist/decorators/api-param.decorator";
+import { ApiTags } from "@nestjs/swagger/dist/decorators/api-use-tags.decorator";
 import { ApiBearerAuth } from "@nestjs/swagger/dist/decorators/api-bearer.decorator";
+import { ApiOperation } from "@nestjs/swagger/dist/decorators/api-operation.decorator";
 
-import { ArticleService } from "../article.service";
-import { UserEntity } from "src/user/entities/user.entity";
 import { User } from "src/user/decorators/user.decorator";
-import { IArticle } from "../interface/article.interface";
-import { ApiOkResponse, ApiUnauthorizedResponse, ApiUnprocessableEntityResponse } from "@nestjs/swagger";
+import { UserEntity } from "src/user/entities/user.entity";
+import { ArticleService } from "src/article/article.service";
+import { IArticle } from "src/article/interface/article.interface";
 import { SingleArticle, GenericErrorModel } from "src/common/dto/swagger.dt";
 
 @ApiTags('Favorites')

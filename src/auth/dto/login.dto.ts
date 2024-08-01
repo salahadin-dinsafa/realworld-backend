@@ -1,5 +1,11 @@
 import { Type } from "class-transformer";
-import { IsEmail, IsNotEmpty, IsObject, IsString, ValidateNested } from "class-validator";
+import {
+    IsEmail,
+    IsObject,
+    IsString,
+    IsNotEmpty,
+    ValidateNested
+} from "class-validator";
 
 export class LoginEle {
     @IsEmail()

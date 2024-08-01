@@ -1,9 +1,10 @@
-import { NestFactory } from "@nestjs/core";
 import { config } from 'dotenv';
+import { NestFactory } from "@nestjs/core";
 
-import { AppModule } from "./app.module"
-import { DocumentBuilder } from "@nestjs/swagger/dist/document-builder";
 import { SwaggerModule } from "@nestjs/swagger/dist/swagger-module";
+import { DocumentBuilder } from "@nestjs/swagger/dist/document-builder";
+
+import { AppModule } from "src/app.module"
 
 config();
 

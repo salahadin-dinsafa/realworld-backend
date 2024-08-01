@@ -1,15 +1,15 @@
 import { Injectable } from "@nestjs/common/decorators/core/injectable.decorator";
 
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm/repository/Repository";
 import * as argon from 'argon2';
 import { JwtService } from "@nestjs/jwt";
-
-import { UserEntity } from "./entities/user.entity";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm/repository/Repository";
 import { UnprocessableEntityException } from "@nestjs/common";
+
+import { IUser } from "src/user/interface/user.interface";
+import { UserEntity } from "src/user/entities/user.entity";
+import { IUpdate } from "src/user/interface/update.interface";
 import { IRegistration } from "src/auth/interface/registration.interface";
-import { IUser } from "./interface/user.interface";
-import { IUpdate } from "./interface/update.interface";
 
 @Injectable()
 export class UserService {
@@ -28,8 +28,8 @@ export class UserService {
             })
         } catch (error) {
             if (error.code === 'ER_DUP_ENTRY')
-                throw new UnprocessableEntityException('user already exist');
-            throw new UnprocessableEntityException(error.message);
+                throw new UnprocessableEntityException({ '': ['user already exist'] });
+            throw new UnprocessableEntityException({ '': [error.message] });
         }
 
     }
@@ -43,8 +43,8 @@ export class UserService {
             return await this.getUser(await user.save());
         } catch (error) {
             if (error.code === 'ER_DUP_ENTRY')
-                throw new UnprocessableEntityException('user already exist');
-            throw new UnprocessableEntityException(error.message);
+                throw new UnprocessableEntityException({ '': ['user already exist'] });
+            throw new UnprocessableEntityException({ '': [error.message] });
         }
     }
 
@@ -52,7 +52,7 @@ export class UserService {
         try {
             return await this.userRepository.findOne({ where: { email } });
         } catch (error) {
-            throw new UnprocessableEntityException(error.message);
+            throw new UnprocessableEntityException({ '': [error.message] });
         }
 
     }

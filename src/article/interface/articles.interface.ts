@@ -1,4 +1,4 @@
-import { IArticleEle } from "./article.interface";
+import { IArticleEle } from "src/article/interface/article.interface";
 
 export interface IArticles {
     articles: IArticleEle[],

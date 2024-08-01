@@ -1,5 +1,5 @@
-import { BadRequestException } from "@nestjs/common/exceptions/bad-request.exception";
 import { ValidationError } from "class-validator";
+import { BadRequestException } from "@nestjs/common/exceptions/bad-request.exception";
 
 
 

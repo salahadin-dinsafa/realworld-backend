@@ -1,7 +1,14 @@
-import { ApiProperty } from "@nestjs/swagger/dist/decorators/api-property.decorator";
 import { Type } from "class-transformer";
+import { ApiProperty } from "@nestjs/swagger/dist/decorators/api-property.decorator";
 
-import { IsArray, IsNotEmpty, IsObject, IsOptional, IsString, ValidateNested } from "class-validator";
+import {
+    IsArray,
+    IsObject,
+    IsString,
+    IsNotEmpty,
+    IsOptional,
+    ValidateNested
+} from "class-validator";
 
 
 export class CreateArticleDtoEle {

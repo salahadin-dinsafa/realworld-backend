@@ -1,5 +1,11 @@
+import {
+    Min,
+    IsNumber,
+    IsString,
+    IsNotEmpty,
+    IsOptional,
+} from "class-validator";
 import { ApiProperty } from "@nestjs/swagger/dist/decorators/api-property.decorator";
-import { IsNotEmpty, IsNumber, IsOptional, IsString, Min } from "class-validator";
 
 export class PaginationDto {
     @ApiProperty({

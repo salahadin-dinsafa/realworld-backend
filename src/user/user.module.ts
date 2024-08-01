@@ -1,14 +1,14 @@
 import { Module } from "@nestjs/common/decorators/modules/module.decorator";
 
-import { TypeOrmModule } from "@nestjs/typeorm/dist/typeorm.module";
-import { PassportModule } from "@nestjs/passport";
 import { JwtModule } from "@nestjs/jwt";
+import { PassportModule } from "@nestjs/passport";
+import { TypeOrmModule } from "@nestjs/typeorm/dist/typeorm.module";
 
 
-import { UserController } from './user.controller';
-import { UserService } from './user.service';
-import { UserEntity } from "./entities/user.entity";
-import { JwtStrategy } from '../user/strategy/jwt.strategy';
+import { UserService } from 'src/user/user.service';
+import { UserController } from 'src/user/user.controller';
+import { UserEntity } from "src/user/entities/user.entity";
+import { JwtStrategy } from 'src/user/strategy/jwt.strategy';
 
 
 @Module({

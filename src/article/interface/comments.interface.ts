@@ -1,4 +1,4 @@
-import { ICommentEle } from "./comment.interface";
+import { ICommentEle } from "src/article/interface/comment.interface";
 
 export interface IComments {
     comments: ICommentEle[];

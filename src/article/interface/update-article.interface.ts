@@ -1,4 +1,4 @@
-import { ICreateArticleEle } from "./create-article.interface";
+import { ICreateArticleEle } from "src/article/interface/create-article.interface";
 
 export interface IUpdateArticle {
     article: IUpdateArticleEle

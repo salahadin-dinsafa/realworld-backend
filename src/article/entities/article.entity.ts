@@ -1,10 +1,17 @@
 import { UserEntity } from "src/user/entities/user.entity";
 
 import {
-    BaseEntity, Entity, PrimaryGeneratedColumn, Column,
-    CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany, ManyToMany, JoinTable
+    Entity,
+    Column,
+    ManyToOne,
+    OneToMany,
+    BaseEntity,
+    ManyToMany,
+    CreateDateColumn,
+    UpdateDateColumn,
+    PrimaryGeneratedColumn,
 } from "typeorm";
-import { CommentEntity } from "./comment.entity";
+import { CommentEntity } from "src/article/entities/comment.entity";
 
 
 @Entity({ name: "articles", })

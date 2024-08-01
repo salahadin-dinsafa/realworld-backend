@@ -1,5 +1,9 @@
+import {
+    Min,
+    IsNumber,
+    IsOptional,
+} from "class-validator";
 import { ApiProperty } from "@nestjs/swagger/dist/decorators/api-property.decorator";
-import { IsNumber, IsOptional, Min } from "class-validator";
 
 export class FeedPaginationDto {
     @ApiProperty({

@@ -1,22 +1,42 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put, Query, UseGuards } from "@nestjs/common";
+import {
+    Get,
+    Put,
+    Post,
+    Body,
+    Query,
+    Param,
+    Delete,
+    HttpCode,
+    UseGuards,
+    Controller,
+    HttpStatus,
+} from "@nestjs/common";
 
 import { AuthGuard } from "@nestjs/passport";
-import { ApiTags } from "@nestjs/swagger/dist/decorators/api-use-tags.decorator";
-import { ApiOperation } from "@nestjs/swagger/dist/decorators/api-operation.decorator";
-import { ApiParam } from "@nestjs/swagger/dist/decorators/api-param.decorator";
-import { ApiBearerAuth } from "@nestjs/swagger/dist/decorators/api-bearer.decorator";
+import {
+    ApiTags,
+    ApiParam,
+    ApiOperation,
+    ApiOkResponse,
+    ApiBearerAuth,
+    ApiUnauthorizedResponse,
+    ApiUnprocessableEntityResponse,
+} from "@nestjs/swagger";
 
-import { ArticleService } from "../article.service";
-import { UserEntity } from "src/user/entities/user.entity";
+import {
+    Articles,
+    GenericErrorModel,
+    SingleArticle
+} from "src/common/dto/swagger.dt";
 import { User } from "src/user/decorators/user.decorator";
-import { CreateArticleDto } from "../dto/create-article.dto";
-import { IArticle } from "../interface/article.interface";
-import { UpdateArticleDto } from "../dto/update-article.dto";
-import { FeedPaginationDto } from "../dto/feed-pagination.dto";
-import { PaginationDto } from "../dto/pagination.dto";
-import { IArticles } from "../interface/articles.interface";
-import { ApiUnauthorizedResponse, ApiOkResponse, ApiUnprocessableEntityResponse } from "@nestjs/swagger/dist/decorators/api-response.decorator";
-import { Articles, GenericErrorModel, SingleArticle } from "src/common/dto/swagger.dt";
+import { UserEntity } from "src/user/entities/user.entity";
+import { ArticleService } from "src/article/article.service";
+import { PaginationDto } from "src/article/dto/pagination.dto";
+import { IArticle } from "src/article/interface/article.interface";
+import { IArticles } from "src/article/interface/articles.interface";
+import { UpdateArticleDto } from "src/article/dto/update-article.dto";
+import { CreateArticleDto } from "src/article/dto/create-article.dto";
+import { FeedPaginationDto } from "src/article/dto/feed-pagination.dto";
 
 
 @ApiTags('Articles')

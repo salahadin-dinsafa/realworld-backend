@@ -1,16 +1,23 @@
-import { Controller } from "@nestjs/common/decorators/core/controller.decorator";
-import { Post } from "@nestjs/common/decorators/http/request-mapping.decorator";
-import { Body } from "@nestjs/common/decorators/http/route-params.decorator";
+import {
+    HttpCode,
+    HttpStatus,
+    Body,
+    Post,
+    Controller
+} from "@nestjs/common";
 
-import { ApiTags } from "@nestjs/swagger/dist/decorators/api-use-tags.decorator";
-import { ApiOperation } from "@nestjs/swagger/dist/decorators/api-operation.decorator";
+import {
+    ApiTags,
+    ApiOperation,
+    ApiOkResponse,
+    ApiUnprocessableEntityResponse
+} from "@nestjs/swagger";
 
-import { RegistrationDto } from "./dto/registration.dto";
+
+import { LoginDto } from "src/auth/dto/login.dto";
+import { AuthService } from "src/auth/auth.service";
 import { IUser } from "src/user/interface/user.interface";
-import { AuthService } from "./auth.service";
-import { LoginDto } from "./dto/login.dto";
-import { HttpCode, HttpStatus } from "@nestjs/common";
-import { ApiOkResponse, ApiUnprocessableEntityResponse } from "@nestjs/swagger";
+import { RegistrationDto } from "src/auth/dto/registration.dto";
 import { SingleUser, GenericErrorModel } from "src/common/dto/swagger.dt";
 
 @ApiTags('Authentication')

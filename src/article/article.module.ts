@@ -2,14 +2,14 @@ import { Module } from "@nestjs/common";
 
 import { TypeOrmModule } from "@nestjs/typeorm";
 
-import { ArticleController } from "./controllers/article.controller";
-import { ArticleService } from "./article.service";
-import { ArticleEntity } from "./entities/article.entity";
 import { ProfileModule } from "src/profile/profile.module";
-import { CommentEntity } from "./entities/comment.entity";
-import { FavoriteController } from "./controllers/favorite.controller";
-import { TagsController } from "./controllers/tag.controller";
-import { CommentController } from "./controllers/comment.controller";
+import { ArticleService } from "src/article/article.service";
+import { ArticleEntity } from "src/article/entities/article.entity";
+import { CommentEntity } from "src/article/entities/comment.entity";
+import { TagsController } from "src/article/controllers/tag.controller";
+import { ArticleController } from "src/article/controllers/article.controller";
+import { CommentController } from "src/article/controllers/comment.controller";
+import { FavoriteController } from "src/article/controllers/favorite.controller";
 
 @Module({
     imports: [

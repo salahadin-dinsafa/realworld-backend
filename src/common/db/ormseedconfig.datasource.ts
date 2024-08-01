@@ -1,7 +1,7 @@
 import { DataSource } from "typeorm";
 import { MysqlConnectionOptions } from "typeorm/driver/mysql/MysqlConnectionOptions";
 
-import { ormConfig } from "./ormconfig.datasource";
+import { ormConfig } from "src/common/db/ormconfig.datasource";
 
 const seedDataSource = (): MysqlConnectionOptions => ({
     ...ormConfig(),

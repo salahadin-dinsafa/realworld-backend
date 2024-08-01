@@ -1,19 +1,39 @@
-import { Controller, UseGuards, Post, Param, Body, Get, Delete, ParseIntPipe, HttpCode, HttpStatus } from "@nestjs/common";
+import {
+    Get,
+    Post,
+    Body,
+    Param,
+    Delete,
+    HttpCode,
+    UseGuards,
+    HttpStatus,
+    Controller,
+    ParseIntPipe,
+} from "@nestjs/common";
 
 import { AuthGuard } from "@nestjs/passport";
-import { ApiTags } from "@nestjs/swagger/dist/decorators/api-use-tags.decorator";
-import { ApiParam } from "@nestjs/swagger/dist/decorators/api-param.decorator";
-import { ApiBearerAuth } from "@nestjs/swagger/dist/decorators/api-bearer.decorator";
-import { ApiOperation } from "@nestjs/swagger/dist/decorators/api-operation.decorator";
+import {
+    ApiTags,
+    ApiParam,
+    ApiOperation,
+    ApiOkResponse,
+    ApiBearerAuth,
+    ApiUnauthorizedResponse,
+    ApiUnprocessableEntityResponse,
+} from "@nestjs/swagger";
 
-import { ArticleService } from "../article.service";
+
+import {
+    Comments,
+    GenericErrorModel,
+    SingleComment
+} from "src/common/dto/swagger.dt";
 import { User } from "src/user/decorators/user.decorator";
 import { UserEntity } from "src/user/entities/user.entity";
-import { AddCommentDto } from "../dto/add-comment.dto";
-import { IComment } from "../interface/comment.interface";
-import { IComments } from "../interface/comments.interface";
-import { ApiOkResponse, ApiUnauthorizedResponse, ApiUnprocessableEntityResponse } from "@nestjs/swagger/dist/decorators/api-response.decorator";
-import { Comments, GenericErrorModel, SingleComment } from "src/common/dto/swagger.dt";
+import { ArticleService } from "src/article/article.service";
+import { AddCommentDto } from "src/article/dto/add-comment.dto";
+import { IComment } from "src/article/interface/comment.interface";
+import { IComments } from "src/article/interface/comments.interface";
 
 @ApiTags('Comments')
 @Controller('articles/:slug/comments')

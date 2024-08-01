@@ -1,13 +1,14 @@
-import { BadRequestException, HttpException } from "@nestjs/common/exceptions";
-import { ExceptionFilter, ArgumentsHost } from "@nestjs/common/interfaces";
-import { Catch } from "@nestjs/common/decorators/core/catch.decorator";
-import { HttpStatus } from "@nestjs/common/enums";
 import { Response } from "express";
+
+import { HttpStatus } from "@nestjs/common/enums";
+import { Catch } from "@nestjs/common/decorators/core/catch.decorator";
+import { ExceptionFilter, ArgumentsHost } from "@nestjs/common/interfaces";
+import { BadRequestException, HttpException } from "@nestjs/common/exceptions";
 
 import {
     HttpExceptionResponse,
     RealWorldHttpExceptionResponse
-} from "../interface/http-exception-response.interface";
+} from "src/common/interface/http-exception-response.interface";
 
 @Catch()
 export class AllExceptionFilter implements ExceptionFilter {
@@ -16,21 +17,23 @@ export class AllExceptionFilter implements ExceptionFilter {
         const response = ctx.getResponse<Response>();
 
         let status: HttpStatus;
-        let errorMessage: string | object;
+        let errorMessage: object;
 
         if (exception instanceof HttpException) {
             if (exception instanceof BadRequestException) {
                 status = 422;
-                errorMessage = exception.getResponse();
+                errorMessage = exception.getResponse() as object;
             } else {
                 status = exception.getStatus();
                 const errorResponse = exception.getResponse();
-                errorMessage = exception.message || (errorResponse as HttpExceptionResponse).error;
+                errorMessage = (errorResponse as HttpExceptionResponse)
             }
 
         } else {
             status = HttpStatus.INTERNAL_SERVER_ERROR;
-            errorMessage = 'Critical internal server error occured!';
+            errorMessage = {
+                '': ['Critical internal server error occurred!']
+            };
         }
 
         const errorResponse = this._getErrorResponse(errorMessage);
@@ -39,7 +42,7 @@ export class AllExceptionFilter implements ExceptionFilter {
     }
 
     _getErrorResponse =
-        (errorMessage: string | object):
+        (errorMessage: object):
             RealWorldHttpExceptionResponse => ({
                 errors: errorMessage
             })

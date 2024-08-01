@@ -1,23 +1,28 @@
-import { ForbiddenException, Injectable, NotFoundException, UnprocessableEntityException } from "@nestjs/common";
+import {
+    Injectable,
+    NotFoundException,
+    ForbiddenException,
+    UnprocessableEntityException,
+} from "@nestjs/common";
 
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm/repository/Repository";
-
-import { ArticleEntity } from "./entities/article.entity";
-import { UserEntity } from "src/user/entities/user.entity";
-import { ICreateArticle } from "./interface/create-article.interface";
-import { IArticle, IArticleEle } from "./interface/article.interface";
-import { ProfileService } from "src/profile/profile.service";
-import { IUpdateArticle } from "./interface/update-article.interface";
-import { IArticles } from "./interface/articles.interface";
-import { IFeedPagination } from "./interface/feed-pagination.interface";
 import { DataSource } from "typeorm/data-source/DataSource";
-import { IComment } from "./interface/comment.interface";
-import { IAddComment } from "./interface/add-comment.interface";
-import { CommentEntity } from "./entities/comment.entity";
-import { IComments } from "./interface/comments.interface";
-import { ITag } from "./interface/tag.interface";
-import { IPagination } from "./interface/pagination.interface";
+
+import { UserEntity } from "src/user/entities/user.entity";
+import { ITag } from "src/article/interface/tag.interface";
+import { ProfileService } from "src/profile/profile.service";
+import { IComment } from "src/article/interface/comment.interface";
+import { ArticleEntity } from "src/article/entities/article.entity";
+import { CommentEntity } from "src/article/entities/comment.entity";
+import { IArticles } from "src/article/interface/articles.interface";
+import { IComments } from "src/article/interface/comments.interface";
+import { IPagination } from "src/article/interface/pagination.interface";
+import { IAddComment } from "src/article/interface/add-comment.interface";
+import { ICreateArticle } from "src/article/interface/create-article.interface";
+import { IArticle, IArticleEle } from "src/article/interface/article.interface";
+import { IUpdateArticle } from "src/article/interface/update-article.interface";
+import { IFeedPagination } from "src/article/interface/feed-pagination.interface";
 
 @Injectable()
 export class ArticleService {
@@ -62,7 +67,7 @@ export class ArticleService {
             }
 
         } catch (error) {
-            throw new UnprocessableEntityException(error.message);
+            throw new UnprocessableEntityException({ '': [error.message] });
         }
     }
 
@@ -72,10 +77,10 @@ export class ArticleService {
             article = await this.articleRepository.findOne({ where: { slug }, relations: ['author'] });
 
         } catch (error) {
-            throw new UnprocessableEntityException(error.message);
+            throw new UnprocessableEntityException({ '': [error.message] });
         }
         if (!article)
-            throw new NotFoundException('article not found');
+            throw new NotFoundException({ '': 'article not found' });
         return article;
     }
 
@@ -96,8 +101,8 @@ export class ArticleService {
 
         } catch (error) {
             if (error.code === 'ER_DUP_ENTRY')
-                throw new UnprocessableEntityException('article already exist');
-            throw new UnprocessableEntityException(error.message);
+                throw new UnprocessableEntityException({ 'article': ['already exist'] });
+            throw new UnprocessableEntityException({ '': [error.message] });
         }
     }
 
@@ -106,7 +111,7 @@ export class ArticleService {
         let article: ArticleEntity = await this.findBySlug(slug);
 
         if (article.author.id !== currentUser.id)
-            throw new ForbiddenException();
+            throw new ForbiddenException({ '': ['Forbidden user'] });
 
         Object.assign(article, updateArticle.article);
 
@@ -118,7 +123,7 @@ export class ArticleService {
         try {
             return await this.getArticle(await article.save(), currentUser);
         } catch (error) {
-            throw new UnprocessableEntityException(error.message);
+            throw new UnprocessableEntityException({ '': [error.message] });
         }
     }
 
@@ -127,12 +132,12 @@ export class ArticleService {
         let article: ArticleEntity = await this.findBySlug(slug);
 
         if (article.author.id !== currentUser.id)
-            throw new ForbiddenException()
+            throw new ForbiddenException({ '': 'Forbidden user' })
 
         try {
             await article.remove();
         } catch (error) {
-            throw new UnprocessableEntityException(error.message);
+            throw new UnprocessableEntityException({ '': [error.message] });
         }
     }
 
@@ -141,7 +146,7 @@ export class ArticleService {
         try {
             return await this.getArticle(article, user);
         } catch (error) {
-            throw new UnprocessableEntityException(error.message);
+            throw new UnprocessableEntityException({ '': [error.message] });
         }
     }
 
@@ -180,7 +185,7 @@ export class ArticleService {
 
 
         } catch (error) {
-            throw new UnprocessableEntityException(error.message);
+            throw new UnprocessableEntityException({ '': [error.message] });
         }
     }
 
@@ -194,10 +199,10 @@ export class ArticleService {
         try {
             article = await this.articleRepository.findOne({ where: { slug }, relations: ['comments'] })
         } catch (error) {
-            throw new UnprocessableEntityException(error.message);
+            throw new UnprocessableEntityException({ '': [error.message] });
         }
 
-        if (!article) throw new NotFoundException('article not found');
+        if (!article) throw new NotFoundException({ 'article': ['article not found'] });
 
         return article;
     }
@@ -212,7 +217,7 @@ export class ArticleService {
             })
             return this.getComment(comment, author)
         } catch (error) {
-            throw new UnprocessableEntityException(error);
+            throw new UnprocessableEntityException({ '': [error.message] });
         }
     }
 
@@ -232,7 +237,7 @@ export class ArticleService {
                 )
             }
         } catch (error) {
-            throw new UnprocessableEntityException(error.message);
+            throw new UnprocessableEntityException({ '': [error.message] });
         }
     }
 
@@ -242,15 +247,15 @@ export class ArticleService {
                 await this.commentRepository.findOne({ where: { id }, relations: ['article', 'author'] })
 
             if (!comment)
-                throw new NotFoundException('comment not found');
+                throw new NotFoundException({ 'comment': ['not found'] });
             if (comment.article.slug !== slug)
-                throw new NotFoundException('article not found');
+                throw new NotFoundException({ 'article': ['not found'] });
             if (comment.author.id !== user.id)
-                throw new ForbiddenException();
+                throw new ForbiddenException({ '': ['Forbidden user'] });
 
             await comment.remove();
         } catch (error) {
-            throw new UnprocessableEntityException(error.message);
+            throw new UnprocessableEntityException({ '': [error.message] });
         }
     }
 
@@ -259,7 +264,7 @@ export class ArticleService {
     async findArticleWithLikes(slug: string): Promise<ArticleEntity> {
         let article: ArticleEntity =
             await this.articleRepository.findOne({ where: { slug }, relations: ['likes', 'author'] })
-        if (!article) throw new NotFoundException('article not found');
+        if (!article) throw new NotFoundException({ '': 'article not found' });
         return article;
     }
 
@@ -283,7 +288,7 @@ export class ArticleService {
         try {
             return this.getArticle(await article.save(), await currentUser.save());
         } catch (error) {
-            throw new UnprocessableEntityException(error.message);
+            throw new UnprocessableEntityException({ '': [error.message] });
         }
     }
 
@@ -307,7 +312,7 @@ export class ArticleService {
         try {
             return this.getArticle(await article.save(), await currentUser.save());
         } catch (error) {
-            throw new UnprocessableEntityException(error.message);
+            throw new UnprocessableEntityException({ '': [error.message] });
         }
     }
 

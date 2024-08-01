@@ -1,13 +1,16 @@
-import { Injectable } from "@nestjs/common/decorators/core/injectable.decorator";
-import { UnauthorizedException, UnprocessableEntityException } from "@nestjs/common";
+import {
+    Injectable,
+    UnauthorizedException,
+    UnprocessableEntityException,
+} from "@nestjs/common";
 
 import * as argon from 'argon2';
 
-import { IRegistration } from "./interface/registration.interface";
-import { IUser } from "src/user/interface/user.interface";
 import { UserService } from "src/user/user.service";
+import { IUser } from "src/user/interface/user.interface";
 import { UserEntity } from "src/user/entities/user.entity";
-import { ILogin } from "./interface/login.interface";
+import { ILogin } from "src/auth/interface/login.interface";
+import { IRegistration } from "src/auth/interface/registration.interface";
 
 @Injectable()
 export class AuthService {
@@ -25,12 +28,12 @@ export class AuthService {
         let user: UserEntity = await this.userService.findByEmail(login.user.email);
 
         if (!user)
-            throw new UnauthorizedException('user not authorize');
+            throw new UnauthorizedException({ '': ['email or password invalid'] });
 
         const isValidPass: boolean = await argon.verify(user.password, login.user.password);
 
         if (!isValidPass)
-            throw new UnauthorizedException('user not authorize');
+            throw new UnauthorizedException({ '': ['email or password invalid'] });
 
         try {
             return await this.userService.getUser(user);

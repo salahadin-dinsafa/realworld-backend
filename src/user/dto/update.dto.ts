@@ -1,6 +1,13 @@
-import { ApiProperty } from "@nestjs/swagger/dist/decorators/api-property.decorator";
+import {
+    IsEmail,
+    IsObject,
+    IsString,
+    IsOptional,
+    IsNotEmpty,
+    ValidateNested
+} from "class-validator";
 import { Type } from "class-transformer";
-import { IsEmail, IsNotEmpty, IsObject, IsOptional, IsString, ValidateNested } from "class-validator";
+import { ApiProperty } from "@nestjs/swagger/dist/decorators/api-property.decorator";
 
 
 export class UpdateDtoEle {

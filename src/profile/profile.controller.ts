@@ -1,16 +1,29 @@
-import { Controller, Delete, Get, HttpCode, Param, Post, UseGuards } from "@nestjs/common";
-
+import {
+    Get,
+    Post,
+    Param,
+    Delete,
+    HttpCode,
+    UseGuards,
+    Controller,
+} from "@nestjs/common";
+import {
+    ApiTags,
+    ApiParam,
+    ApiOperation,
+    ApiOkResponse,
+    ApiBearerAuth,
+    ApiUnauthorizedResponse,
+    ApiUnprocessableEntityResponse,
+} from "@nestjs/swagger";
 import { AuthGuard } from "@nestjs/passport";
-import { ApiTags } from "@nestjs/swagger/dist/decorators/api-use-tags.decorator";
-import { ApiOperation } from "@nestjs/swagger/dist/decorators/api-operation.decorator";
-import { ApiParam } from "@nestjs/swagger/dist/decorators/api-param.decorator";
-import { ApiBearerAuth } from "@nestjs/swagger/dist/decorators/api-bearer.decorator";
 
-import { ProfileService } from './profile.service';
+
+
+import { ProfileService } from 'src/profile/profile.service';
 import { User } from "src/user/decorators/user.decorator";
 import { UserEntity } from "src/user/entities/user.entity";
-import { IProfile } from "./interfaces/profile.interface";
-import { ApiOkResponse, ApiUnauthorizedResponse, ApiUnprocessableEntityResponse } from "@nestjs/swagger";
+import { IProfile } from "src/profile/interfaces/profile.interface";
 import { SingleProfile, GenericErrorModel } from "src/common/dto/swagger.dt";
 
 @ApiTags('Profile')

@@ -1,6 +1,14 @@
+import {
+    Entity,
+    Column,
+    JoinTable,
+    OneToMany,
+    BaseEntity,
+    ManyToMany,
+    PrimaryGeneratedColumn,
+} from "typeorm";
 import { ArticleEntity } from "src/article/entities/article.entity";
 import { CommentEntity } from "src/article/entities/comment.entity";
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, JoinTable, ManyToMany, OneToMany } from "typeorm";
 
 
 

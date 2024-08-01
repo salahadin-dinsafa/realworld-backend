@@ -1,17 +1,26 @@
-import { Controller } from "@nestjs/common/decorators/core/controller.decorator";
-import { Body, Get, Put, UseGuards } from "@nestjs/common";
+import {
+    Body,
+    Get,
+    Put,
+    UseGuards,
+    Controller
+} from "@nestjs/common";
 
+import {
+    ApiOkResponse,
+    ApiUnauthorizedResponse,
+    ApiUnprocessableEntityResponse
+} from "@nestjs/swagger/dist/decorators/api-response.decorator";
 import { AuthGuard } from "@nestjs/passport/dist/auth.guard";
 import { ApiTags } from "@nestjs/swagger/dist/decorators/api-use-tags.decorator";
-import { ApiOperation } from "@nestjs/swagger/dist/decorators/api-operation.decorator";
 import { ApiBearerAuth } from "@nestjs/swagger/dist/decorators/api-bearer.decorator";
+import { ApiOperation } from "@nestjs/swagger/dist/decorators/api-operation.decorator";
 
-import { UserService } from "./user.service";
-import { UserEntity } from "./entities/user.entity";
-import { User } from "./decorators/user.decorator";
-import { IUser } from "./interface/user.interface";
-import { UpdateDto } from "./dto/update.dto";
-import { ApiOkResponse, ApiUnauthorizedResponse, ApiUnprocessableEntityResponse } from "@nestjs/swagger/dist/decorators/api-response.decorator";
+import { UserService } from "src/user/user.service";
+import { UpdateDto } from "src/user/dto/update.dto";
+import { User } from "src/user/decorators/user.decorator";
+import { IUser } from "src/user/interface/user.interface";
+import { UserEntity } from "src/user/entities/user.entity";
 import { SingleUser, GenericErrorModel } from "src/common/dto/swagger.dt";
 
 @ApiTags('User')
