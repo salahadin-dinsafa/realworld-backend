@@ -19,6 +19,7 @@ import {
     ApiOperation,
     ApiOkResponse,
     ApiBearerAuth,
+    ApiCreatedResponse,
     ApiUnauthorizedResponse,
     ApiUnprocessableEntityResponse,
 } from "@nestjs/swagger";
@@ -36,7 +37,6 @@ import { IArticle } from "src/article/interface/article.interface";
 import { IArticles } from "src/article/interface/articles.interface";
 import { UpdateArticleDto } from "src/article/dto/update-article.dto";
 import { CreateArticleDto } from "src/article/dto/create-article.dto";
-import { FeedPaginationDto } from "src/article/dto/feed-pagination.dto";
 
 
 @ApiTags('Articles')
@@ -50,6 +50,7 @@ export class ArticleController {
     })
     @ApiUnauthorizedResponse({
         description: 'Unauthorized',
+        type: GenericErrorModel
     })
     @ApiUnprocessableEntityResponse({
         description: 'Unexpected error',
@@ -64,9 +65,9 @@ export class ArticleController {
     @Get('/feed')
     feed(
         @User() user: UserEntity,
-        @Query() feedPaginationDto: FeedPaginationDto,
+        @Query() paginationDto: PaginationDto,
     ): Promise<IArticles> {
-        return this.articleService.feed(user, feedPaginationDto);
+        return this.articleService.feed(user, paginationDto);
     }
 
     @ApiOkResponse({
@@ -89,12 +90,13 @@ export class ArticleController {
         return this.articleService.find(user, paginationDto);
     }
 
-    @ApiOkResponse({
+    @ApiCreatedResponse({
         description: 'Single article',
         type: SingleArticle,
     })
     @ApiUnauthorizedResponse({
         description: 'Unauthorized',
+        type: GenericErrorModel
     })
     @ApiUnprocessableEntityResponse({
         description: 'Unexpected error',
@@ -104,7 +106,7 @@ export class ArticleController {
         summary: 'Create an article',
         description: 'Create an article. Auth is required'
     })
-    @HttpCode(HttpStatus.OK)
+    @HttpCode(HttpStatus.CREATED)
     @ApiBearerAuth()
     @UseGuards(AuthGuard('jwt'))
     @Post()
@@ -147,6 +149,7 @@ export class ArticleController {
     })
     @ApiUnauthorizedResponse({
         description: 'Unauthorized',
+        type: GenericErrorModel
     })
     @ApiUnprocessableEntityResponse({
         description: 'Unexpected error',
@@ -177,6 +180,7 @@ export class ArticleController {
     })
     @ApiUnauthorizedResponse({
         description: 'Unauthorized',
+        type: GenericErrorModel
     })
     @ApiUnprocessableEntityResponse({
         description: 'Unexpected error',

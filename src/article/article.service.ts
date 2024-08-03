@@ -22,7 +22,6 @@ import { IAddComment } from "src/article/interface/add-comment.interface";
 import { ICreateArticle } from "src/article/interface/create-article.interface";
 import { IArticle, IArticleEle } from "src/article/interface/article.interface";
 import { IUpdateArticle } from "src/article/interface/update-article.interface";
-import { IFeedPagination } from "src/article/interface/feed-pagination.interface";
 
 @Injectable()
 export class ArticleService {
@@ -47,10 +46,10 @@ export class ArticleService {
                 .addOrderBy('updatedAt', 'DESC');
 
         try {
-            tag ?
-                queryBuilder.andWhere('article.tagList like :tag', { tag: `%${tag}%` }) : null;
             author ?
                 queryBuilder.andWhere('author.username = :author', { author }) : null;
+            tag ?
+                queryBuilder.andWhere('article.tagList like :tag', { tag: `%${tag}%` }) : null;
             favorited ?
                 queryBuilder.andWhere('favorited.username = :favorited', { favorited }) : null;
             limit ?
@@ -97,7 +96,8 @@ export class ArticleService {
                 author
             })
 
-            return await this.getArticle(article, author);
+            const res = await this.getArticle(article, author);
+            return res;
 
         } catch (error) {
             if (error.code === 'ER_DUP_ENTRY')
@@ -150,15 +150,16 @@ export class ArticleService {
         }
     }
 
-    async feed(currentUser: UserEntity, pagination: IFeedPagination): Promise<IArticles> {
-        const { limit, offset } = pagination;
+    async feed(currentUser: UserEntity, pagination: IPagination): Promise<IArticles> {
+        const { tag, author, favorited, limit, offset } = pagination;
         try {
-            let queryBuilder =
+            const queryBuilder =
                 this.datasource
                     .getRepository(ArticleEntity)
-                    .createQueryBuilder('article')
-                    .leftJoinAndSelect('article.author', 'author')
-                    .addOrderBy('article.updatedAt', 'DESC')
+                    .createQueryBuilder("article")
+                    .leftJoinAndSelect("article.author", "author")
+                    .leftJoinAndSelect("article.likes", "favorited")
+                    .addOrderBy('updatedAt', 'DESC');
 
             let followingId: number[] = [-1];
             (await this.profileService.findByNameWithFollowing(currentUser.username))
@@ -168,6 +169,18 @@ export class ArticleService {
                 });
 
             queryBuilder.andWhere('author.id IN(:...followingId)', { followingId });
+
+            author ?
+                queryBuilder.andWhere('author.username = :author', { author }) : null;
+            tag ?
+                queryBuilder.andWhere('article.tagList like :tag', { tag: `%${tag}%` }) : null;
+            favorited ?
+                queryBuilder.andWhere('favorited.username = :favorited', { favorited }) : null;
+            limit ?
+                queryBuilder.limit(limit) : queryBuilder.limit(20);
+            offset ?
+                queryBuilder.offset(offset) : queryBuilder.offset(0);
+
 
             queryBuilder.offset(offset ? offset : 0);
             queryBuilder.limit(limit ? limit : 20);
