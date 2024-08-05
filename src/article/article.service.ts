@@ -5,6 +5,7 @@ import {
     UnprocessableEntityException,
 } from "@nestjs/common";
 
+import lodash from 'lodash';
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm/repository/Repository";
 import { DataSource } from "typeorm/data-source/DataSource";
@@ -337,9 +338,13 @@ export class ArticleService {
 
     async findTags(): Promise<ITag> {
         let tags: string[] = [];
+        // (await this.articleRepository.find()).map(article => article.tagList.map(tag => {
+        //     if (!tags.find(t => t === tag))
+        //         tags.push(tag)
+        // }))
         (await this.articleRepository.find()).map(article => article.tagList.map(tag => {
-            if (!tags.find(t => t === tag))
-                tags.push(tag)
+            0
+            tags.push(tag)
         }))
 
         return {
