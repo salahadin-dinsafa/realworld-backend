@@ -195,7 +195,7 @@ export class ArticleService {
 
             return {
                 articles: result,
-                articlesCount: result.length
+                articlesCount: await queryBuilder.getCount()
             }
 
 
