@@ -39,7 +39,6 @@ async function bootstrap() {
             'Token',)
 
         .addServer('http://localhost:3000/api')
-        .addTag('Realworld')
         .build()
 
     const document = SwaggerModule.createDocument(app, options, {

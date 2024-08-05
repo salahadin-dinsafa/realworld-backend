@@ -66,6 +66,7 @@ export class ArticleService {
             }
 
         } catch (error) {
+            console.log(error)
             throw new UnprocessableEntityException({ '': [error.message] });
         }
     }
@@ -318,7 +319,10 @@ export class ArticleService {
         currentUser.likes = currentUser.likes.filter(art => art.id !== article.id);
         article.likes = article.likes.filter(us => us.id !== currentUser.id);
 
-        article.favoritesCount -= 1;
+        article.favoritesCount <= 0
+            ?
+            article.favoritesCount = 0 :
+            article.favoritesCount -= 1;
 
         if (article.favoritesCount === 0)
             article.favorited = false;
@@ -350,7 +354,10 @@ export class ArticleService {
     // Helper function
 
     async getArticle(article: ArticleEntity, currentUser: UserEntity): Promise<IArticle> {
+        let currentUserId: number = currentUser ? currentUser.id : -1;
         const user: UserEntity = await this.profileService.findByNameWithFollower(article.author.username);
+        let articleWithLikes: ArticleEntity = await this.findArticleWithLikes(article.slug);
+
         return {
             article: {
                 slug: article.slug,
@@ -360,7 +367,7 @@ export class ArticleService {
                 tagList: article.tagList,
                 createdAt: article.createdAt,
                 updatedAt: article.updatedAt,
-                favorited: article.favorited,
+                favorited: articleWithLikes.likes.findIndex(likedUser => likedUser.id === currentUserId) !== -1,
                 favoritesCount: article.favoritesCount,
                 author: this.profileService.getProfile(user, currentUser).profile,
             }
