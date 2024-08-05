@@ -63,7 +63,7 @@ export class ArticleService {
             return {
                 articles: await Promise.all(
                     articles.map(async article => (await this.getArticle(article, user)).article)),
-                articlesCount: articles.length,
+                articlesCount: await queryBuilder.getCount(),
             }
 
         } catch (error) {
