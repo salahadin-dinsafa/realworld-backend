@@ -5,7 +5,7 @@ import {
     UnprocessableEntityException,
 } from "@nestjs/common";
 
-import lodash from 'lodash';
+import { concat, countBy } from 'lodash';
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm/repository/Repository";
 import { DataSource } from "typeorm/data-source/DataSource";
@@ -337,18 +337,23 @@ export class ArticleService {
     // Tag
 
     async findTags(): Promise<ITag> {
-        let tags: string[] = [];
-        // (await this.articleRepository.find()).map(article => article.tagList.map(tag => {
-        //     if (!tags.find(t => t === tag))
-        //         tags.push(tag)
-        // }))
-        (await this.articleRepository.find()).map(article => article.tagList.map(tag => {
-            0
-            tags.push(tag)
-        }))
+        try {
+            let tags: string[] = [];
+            (await this.articleRepository.find()).map(article => {
+                tags = concat(tags, article.tagList)
+            })
 
-        return {
-            tags
+            let arrayObject = countBy(tags)
+
+            let arrayWithFreq = Object.keys(arrayObject).map(key => [key, arrayObject[key]])
+
+            arrayWithFreq.sort((a, b) => (b[1] as number) - (a[1] as number))
+
+            return {
+                tags: arrayWithFreq.slice(0, 9).map(element => element[0]) as string[]
+            }
+        } catch (error) {
+            throw new UnprocessableEntityException({ '': [error.message] });
         }
     }
 
