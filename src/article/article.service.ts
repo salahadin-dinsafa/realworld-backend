@@ -119,6 +119,9 @@ export class ArticleService {
 
         if (updateArticle.article.title) {
             const titleArr: string[] = updateArticle.article.title.toLowerCase().split(' ');
+            titleArr.push(
+                Math.random().toString(36).substring(2, 7)
+            )
             article.slug = titleArr.join('-');
         }
 

@@ -28,7 +28,7 @@ export class ArticleEntity extends BaseEntity {
     @Column()
     description: string;
 
-    @Column()
+    @Column('text')
     body: string;
 
     @Column('simple-array')
