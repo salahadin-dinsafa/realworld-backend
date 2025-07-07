@@ -376,7 +376,6 @@ export class ArticleService {
                 slug: article.slug,
                 title: article.title,
                 description: article.description,
-                body: article.body,
                 tagList: article.tagList,
                 createdAt: article.createdAt,
                 updatedAt: article.updatedAt,
