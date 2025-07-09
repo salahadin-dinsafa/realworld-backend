@@ -16,3 +16,6 @@
 4. DB_NAME
 5. DB_PASSWORD
 6. JWT_SECRET
+
+## Command
+1. pnpm run db:create src/common/db/migration/MigrationName

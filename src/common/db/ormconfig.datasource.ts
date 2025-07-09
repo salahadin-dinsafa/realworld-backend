@@ -1,12 +1,12 @@
 import { config } from 'dotenv';
 
 import { DataSource } from "typeorm";
-import { MysqlConnectionOptions } from "typeorm/driver/mysql/MysqlConnectionOptions";
+import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 
 config();
 
-export const ormConfig = (): MysqlConnectionOptions => ({
-    type: "mysql",
+export const ormConfig = (): PostgresConnectionOptions => ({
+    type: "postgres",
     host: process.env.DB_HOST,
     port: +process.env.DB_PORT,
     username: process.env.DB_USER,
