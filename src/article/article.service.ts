@@ -44,7 +44,7 @@ export class ArticleService {
                 .createQueryBuilder("article")
                 .leftJoinAndSelect("article.author", "author")
                 .leftJoinAndSelect("article.likes", "favorited")
-                .addOrderBy('updatedAt', 'DESC');
+                .addOrderBy("article.updatedAt", 'DESC');
 
         try {
             author ?
@@ -97,7 +97,10 @@ export class ArticleService {
                 ...createArticle.article,
                 author
             })
-
+            // Ensure tagList is always an array before saving
+            if (typeof article.tagList === 'string') {
+                article.tagList = [article.tagList];
+            }
             const res = await this.getArticle(article, author);
             return res;
 
@@ -164,7 +167,7 @@ export class ArticleService {
                     .createQueryBuilder("article")
                     .leftJoinAndSelect("article.author", "author")
                     .leftJoinAndSelect("article.likes", "favorited")
-                    .addOrderBy('updatedAt', 'DESC');
+                    .addOrderBy("article.updatedAt", 'DESC');
 
             let followingId: number[] = [-1];
             (await this.profileService.findByNameWithFollowing(currentUser.username))

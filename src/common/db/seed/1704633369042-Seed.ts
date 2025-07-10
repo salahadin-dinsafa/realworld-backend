@@ -27,7 +27,7 @@ export class Seed1704633369042 implements MigrationInterface {
             'how to train you dragon seed',
             'A legend footstep to follow',
             'It is true to explain something to someone..',
-            'react,angular',
+            '{react,angular}',
             1)
         `);
         await queryRunner.query(`
@@ -37,7 +37,7 @@ export class Seed1704633369042 implements MigrationInterface {
             'how to train you dragon seed two',
             'A legend footstep to follow',
             'It is true to explain something to someone..',
-            'react,angular,nextjs',
+            '{react,angular,nextjs}',
             1)
         `);
         await queryRunner.query(`
@@ -55,7 +55,7 @@ export class Seed1704633369042 implements MigrationInterface {
             2)
         `);
         await queryRunner.query(`
-        INSERT INTO followers ("usersId_1","usersId_2") 
+        INSERT INTO follower ("usersId_1","usersId_2") 
         VALUES (
             1,
             2)
@@ -67,12 +67,6 @@ export class Seed1704633369042 implements MigrationInterface {
             1)
         `);
         await queryRunner.query(`
-        INSERT INTO users_following ("usersId_1","usersId_2") 
-        VALUES (
-            1,
-            1)
-        `);
-        await queryRunner.query(`
         INSERT INTO users_likes_articles ("usersId","articlesId") 
         VALUES (
             1,
@@ -80,6 +74,6 @@ export class Seed1704633369042 implements MigrationInterface {
         `);
     }
 
-    public async down(queryRunner: QueryRunner): Promise<void> { }
+    public async down(_queryRunner: QueryRunner): Promise<void> { }
 
 }
