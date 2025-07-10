@@ -29,7 +29,7 @@ export class UserEntity extends BaseEntity {
     @Column({ default: '', })
     bio: string;
 
-    @Column({ type: 'longtext', nullable: true })
+    @Column({ type: 'text', nullable: true })
     image: string
 
     @ManyToMany(() => UserEntity)

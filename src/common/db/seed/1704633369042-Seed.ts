@@ -5,7 +5,7 @@ export class Seed1704633369042 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`
-        INSERT INTO \`users\` (\`username\`,\`email\`,\`password\`,\`bio\`) 
+        INSERT INTO users ("username","email","password","bio") 
         VALUES (
             'Ahmed',
             'ahmed@gmail.com',
@@ -13,7 +13,7 @@ export class Seed1704633369042 implements MigrationInterface {
             'We will proceed')
         `);
         await queryRunner.query(`
-        INSERT INTO \`users\` (\`username\`,\`email\`,\`password\`,\`bio\`) 
+        INSERT INTO users ("username","email","password","bio") 
         VALUES (
             'Mume',
             'mume@gmail.com',
@@ -21,7 +21,7 @@ export class Seed1704633369042 implements MigrationInterface {
             'The one and the only one')
         `);
         await queryRunner.query(`
-        INSERT INTO \`articles\` (\`slug\`,\`title\`,\`description\`,\`body\`,\`tagList\`,\`authorId\`) 
+        INSERT INTO articles ("slug","title","description","body","tagList","authorId") 
         VALUES (
             'how-to-train-you-dragon-seed',
             'how to train you dragon seed',
@@ -31,49 +31,49 @@ export class Seed1704633369042 implements MigrationInterface {
             1)
         `);
         await queryRunner.query(`
-        INSERT INTO \`articles\` (\`slug\`,\`title\`,\`description\`,\`body\`,\`tagList\`,\`authorId\`) 
+        INSERT INTO articles ("slug","title","description","body","tagList","authorId") 
         VALUES (
             'how-to-train-you-dragon-seed-2',
-            'how to train you dragon seed tow',
+            'how to train you dragon seed two',
             'A legend footstep to follow',
             'It is true to explain something to someone..',
             'react,angular,nextjs',
             1)
         `);
         await queryRunner.query(`
-        INSERT INTO \`comments\` (\`body\`,\`authorId\`,\`articleId\`) 
+        INSERT INTO comments ("body","authorId","articleId") 
         VALUES (
             'of course, it is the right choice to to pick this title',
             1,
             1)
         `);
         await queryRunner.query(`
-        INSERT INTO \`comments\` (\`body\`,\`authorId\`,\`articleId\`) 
+        INSERT INTO comments ("body","authorId","articleId") 
         VALUES (
             'Excellent choice for you',
             1,
             2)
         `);
         await queryRunner.query(`
-        INSERT INTO \`follower\` (\`usersId_1\`,\`usersId_2\`) 
+        INSERT INTO followers ("usersId_1","usersId_2") 
         VALUES (
             1,
             2)
         `);
         await queryRunner.query(`
-        INSERT INTO \`following\` (\`usersId_1\`,\`usersId_2\`) 
+        INSERT INTO following ("usersId_1","usersId_2") 
         VALUES (
             2,
             1)
         `);
         await queryRunner.query(`
-        INSERT INTO \`users_likes_articles\` (\`usersId\`,\`articlesId\`) 
+        INSERT INTO users_following ("usersId_1","usersId_2") 
         VALUES (
             1,
             1)
         `);
         await queryRunner.query(`
-        INSERT INTO \`users_likes_articles\` (\`usersId\`,\`articlesId\`) 
+        INSERT INTO users_likes_articles ("usersId","articlesId") 
         VALUES (
             1,
             2)

@@ -31,8 +31,8 @@ export class ArticleEntity extends BaseEntity {
     @Column('text')
     body: string;
 
-    @Column('simple-array')
-    tagList: string[];
+    @Column({ type: 'simple-array', array: true, default: [] })
+    taglist: string[];
 
     @CreateDateColumn()
     createdAt: Date;

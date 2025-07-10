@@ -1,9 +1,9 @@
 import { DataSource } from "typeorm";
-import { MysqlConnectionOptions } from "typeorm/driver/mysql/MysqlConnectionOptions";
+import { PostgresConnectionOptions } from "typeorm/driver/postgres/PostgresConnectionOptions";
 
 import { ormConfig } from "src/common/db/ormconfig.datasource";
 
-const seedDataSource = (): MysqlConnectionOptions => ({
+const seedDataSource = (): PostgresConnectionOptions => ({
     ...ormConfig(),
     migrations: [__dirname + '/seed/**/*{.ts,.js}'],
 })
