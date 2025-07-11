@@ -37,6 +37,7 @@
     "argon2": "^0.43.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.2",
+    "dotenv": "^17.2.0",
     "joi": "^17.13.3",
     "lodash-es": "^4.17.21",
     "passport": "^0.7.0",
