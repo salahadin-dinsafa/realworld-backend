@@ -24,10 +24,11 @@ export class UserService {
         try {
             return await this.userRepository.save({
                 ...registration.user,
+                username: registration.user.username.toLowerCase(),
                 password: await argon.hash(registration.user.password),
             })
         } catch (error) {
-            if (error.code === 'ER_DUP_ENTRY')
+            if (error.code == 23505)
                 throw new UnprocessableEntityException({ '': ['user already exist'] });
             throw new UnprocessableEntityException({ '': [error.message] });
         }
@@ -38,6 +39,8 @@ export class UserService {
         Object.assign(user, update.user);
         if (update.user.password)
             user.password = await argon.hash(update.user.password);
+        if (update.user.username)
+            user.username = update.user.username.toLowerCase();
 
         try {
             return await this.getUser(await user.save());

@@ -5,7 +5,7 @@ import {
     UnprocessableEntityException,
 } from "@nestjs/common";
 
-import { concat, countBy } from 'lodash';
+import { concat, countBy } from 'lodash-es';
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm/repository/Repository";
 import { DataSource } from "typeorm/data-source/DataSource";
@@ -44,7 +44,7 @@ export class ArticleService {
                 .createQueryBuilder("article")
                 .leftJoinAndSelect("article.author", "author")
                 .leftJoinAndSelect("article.likes", "favorited")
-                .addOrderBy('updatedAt', 'DESC');
+                .addOrderBy("article.updatedAt", 'DESC');
 
         try {
             author ?
@@ -93,8 +93,8 @@ export class ArticleService {
         try {
             const article = await this.articleRepository.save({
                 slug: titleArray.join('-'),
-                tagList: createArticle.article.tagList || [],
                 ...createArticle.article,
+                tagList: `{${createArticle.article.tagList.join(',')}}` || `{}`,
                 author
             })
 
@@ -142,6 +142,8 @@ export class ArticleService {
         try {
             await article.remove();
         } catch (error) {
+            if (error.code == 23503)
+                throw new UnprocessableEntityException({ 'article comment': ['article has comments'] });
             throw new UnprocessableEntityException({ '': [error.message] });
         }
     }
@@ -164,7 +166,7 @@ export class ArticleService {
                     .createQueryBuilder("article")
                     .leftJoinAndSelect("article.author", "author")
                     .leftJoinAndSelect("article.likes", "favorited")
-                    .addOrderBy('updatedAt', 'DESC');
+                    .addOrderBy("article.updatedAt", 'DESC');
 
             let followingId: number[] = [-1];
             (await this.profileService.findByNameWithFollowing(currentUser.username))
