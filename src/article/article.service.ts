@@ -93,14 +93,11 @@ export class ArticleService {
         try {
             const article = await this.articleRepository.save({
                 slug: titleArray.join('-'),
-                tagList: createArticle.article.tagList || [],
                 ...createArticle.article,
+                tagList: `{${createArticle.article.tagList.join(',')}}` || `{}`,
                 author
             })
-            // Ensure tagList is always an array before saving
-            if (typeof article.tagList === 'string') {
-                article.tagList = [article.tagList];
-            }
+
             const res = await this.getArticle(article, author);
             return res;
 
@@ -145,6 +142,8 @@ export class ArticleService {
         try {
             await article.remove();
         } catch (error) {
+            if (error.code == 23503)
+                throw new UnprocessableEntityException({ 'article comment': ['article has comments'] });
             throw new UnprocessableEntityException({ '': [error.message] });
         }
     }

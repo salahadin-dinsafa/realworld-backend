@@ -4,7 +4,7 @@ export interface IArticleEle {
     slug: string;
     title: string;
     description: string;
-    tagList: string[];
+    tagList: string | string[];
     createdAt: Date;
     updatedAt: Date;
     favorited: boolean;

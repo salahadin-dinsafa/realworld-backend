@@ -19,3 +19,5 @@
 
 ## Command
 1. pnpm run db:create src/common/db/migration/MigrationName
+2. pnpm run db:migrate
+3. pnpm run db:seed :- only first time

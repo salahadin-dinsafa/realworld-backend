@@ -32,7 +32,7 @@ export class ArticleEntity extends BaseEntity {
     body: string;
 
     @Column({ type: 'simple-array', array: true, default: [] })
-    tagList: string[];
+    tagList: string;
 
     @CreateDateColumn()
     createdAt: Date;
