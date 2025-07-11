@@ -5,7 +5,7 @@ import {
     UnprocessableEntityException,
 } from "@nestjs/common";
 
-import { concat, countBy } from 'lodash';
+import { concat, countBy } from 'lodash-es';
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm/repository/Repository";
 import { DataSource } from "typeorm/data-source/DataSource";
